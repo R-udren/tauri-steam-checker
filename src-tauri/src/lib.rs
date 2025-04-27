@@ -25,7 +25,7 @@ fn get_steam_users_list() -> Vec<SteamUser> {
 }
 
 #[tauri::command]
-fn fetch_profile_command(steam_id: &str) -> Result<FetchedProfile, String> {
+fn fetch_steam_profile(steam_id: &str) -> Result<FetchedProfile, String> {
     let mut cache = PROFILE_CACHE.lock().unwrap();
     if let Some(profile) = cache.get(steam_id) {
         return Ok(profile.clone());
@@ -46,7 +46,7 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             get_steam_users_list,
-            fetch_profile_command
+            fetch_steam_profile
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

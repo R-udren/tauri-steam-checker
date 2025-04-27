@@ -86,7 +86,12 @@ async function getSteamUsers() {
 
     // Fetch profiles for each user
     for (const user of steamUsers.value) {
-      await fetchSteamProfile(user.steam_id);
+      try {
+        await fetchSteamProfile(user.steam_id);
+      } catch (error) {
+        console.error("Error fetching Steam profile:", error);
+        errorMessage.value = "Failed to fetch Steam profile. Details: " + error;
+      }
     }
   } catch (error) {
     console.error("Error fetching Steam users:", error);
