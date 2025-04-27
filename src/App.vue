@@ -19,7 +19,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 h-screen">
     <header class="mb-8 text-center">
       <h1 class="text-3xl font-bold text-gray-800">
         Blazing Fast Steam Account Finder

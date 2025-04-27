@@ -28,7 +28,7 @@ export interface MostPlayedGames {
 
 export interface FetchedProfile {
   steamID64: string;
-  steamID?: string;
+  steamID?: string; // Nickname
   onlineState?: string;
   stateMessage?: string;
   VisibilityState?: string;
