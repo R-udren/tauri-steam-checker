@@ -43,8 +43,8 @@ defineEmits<{
       class="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
 
-    <div class="text-sm text-gray-500 mt-2 mb-4">
-      Found {{ filteredUsers.length }} users
+    <div class="text-sm text-gray-500 mt-2 mb-4 flex justify-center">
+      {{ filteredUsers.map((user) => user.steam_id).join(", ") }}
     </div>
 
     <slot :filtered-users="filteredUsers"></slot>

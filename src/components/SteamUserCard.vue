@@ -66,7 +66,7 @@ defineProps<{
           v-for="(game, index) in profile.mostPlayedGames.mostPlayedGame"
           :key="index"
         >
-          <img :src="game.gameLogo" class="w-32 h-12 inline-block mr-1" />
+          <img :src="game.gameLogo" class="w-24 h-8 inline-block mr-1" />
           {{ game.hoursOnRecord }} hours
         </div>
       </div>
