@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { SteamUser, FetchedProfile } from "../types/steam";
+import type { FetchedProfile, SteamUser } from "../types.ts";
 
 defineProps<{
   user: SteamUser;
@@ -54,7 +54,7 @@ defineProps<{
         <span class="text-gray-700">{{ user.name_history.join(", ") }}</span>
       </div>
 
-      <div v-if="profile?.vacBanned === 1" class="text-sm mb-1">
+      <div v-if="profile?.vacBanned === '1'" class="text-sm mb-1">
         <span class="font-medium text-gray-600">VAC Status: </span>
         <span class="text-red-600">Banned</span>
       </div>

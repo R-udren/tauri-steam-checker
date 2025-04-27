@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { useSteamUsers } from "./composables/steamService";
+import { onMounted } from "vue";
+import ErrorMessage from "./components/ErrorMessage.vue";
 import SteamUserCard from "./components/SteamUserCard.vue";
 import UserSearch from "./components/UserSearch.vue";
-import ErrorMessage from "./components/ErrorMessage.vue";
+import { useSteamUsers } from "./composables/steamService";
 
 const { steamUsers, fetchedProfiles, errorMessage, isLoading, getSteamUsers } =
   useSteamUsers();

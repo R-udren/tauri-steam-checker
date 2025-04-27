@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import type { SteamUser } from "../types/steam";
+import { computed, ref } from "vue";
+import type { SteamUser } from "../types.ts";
 
 const props = defineProps<{
   users: SteamUser[];
