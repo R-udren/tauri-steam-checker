@@ -25,12 +25,12 @@ fn get_steam_users_list() -> Vec<SteamUser> {
 }
 
 #[tauri::command]
-fn fetch_steam_profile(steam_id: &str) -> Result<FetchedProfile, String> {
+fn fetch_steam_profile(steam_id: String) -> Result<FetchedProfile, String> {
     let mut cache = PROFILE_CACHE.lock().unwrap();
-    if let Some(profile) = cache.get(steam_id) {
+    if let Some(profile) = cache.get(&steam_id) {
         return Ok(profile.clone());
     }
-    let fetched = fetch_profile(steam_id);
+    let fetched = fetch_profile(&steam_id);
     match fetched {
         Ok(profile) => {
             cache.insert(steam_id.to_string(), profile.clone());
