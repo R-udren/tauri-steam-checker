@@ -17,7 +17,9 @@ fn get_steam_users_list() -> Vec<SteamUser> {
     let mut steam_users_cache = STEAM_USERS_CACHE.lock().unwrap();
     if steam_users_cache.is_empty() {
         let steam_users = get_steam_users().unwrap_or_default();
-        *steam_users_cache = steam_users.to_vec();
+        let mut steam_users_vec = steam_users.to_vec();
+        steam_users_vec.sort_by(|a, b| b.time_stamp.cmp(&a.time_stamp));
+        *steam_users_cache = steam_users_vec;
     }
     steam_users_cache.clone()
 }
