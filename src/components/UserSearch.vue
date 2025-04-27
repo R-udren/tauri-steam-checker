@@ -40,11 +40,11 @@ defineEmits<{
       v-model="searchQuery"
       type="text"
       placeholder="Search by nickname, Steam ID or name history"
-      class="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      class="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
     />
 
     <div class="text-sm text-gray-500 mt-2 mb-4 flex justify-center">
-      {{ filteredUsers.map((user) => user.steam_id).join(", ") }}
+      {{ filteredUsers.map((user) => user.steam_id).join(" ") }}
     </div>
 
     <slot :filtered-users="filteredUsers"></slot>

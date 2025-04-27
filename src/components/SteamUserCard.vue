@@ -9,39 +9,40 @@ defineProps<{
 
 <template>
   <div
-    class="flex border border-gray-200 rounded-lg p-4 mb-4 bg-gray-50 shadow-sm hover:shadow-md transition-shadow"
+    class="flex border border-gray-200 rounded-lg p-4 mb-4 bg-gray-50 shadow-sm hover:shadow-xl transition-shadow"
   >
     <div v-if="profile?.avatarFull" class="mr-4">
       <img
         :src="profile.avatarFull"
         alt="Steam Avatar"
-        class="w-24 h-24 rounded"
+        class="w-24 h-24 rounded-md"
       />
     </div>
 
     <div class="flex-1">
-      <h3 class="text-xl font-semibold mb-1">
+      <h3 class="text-2xl font-semibold mb-1">
         {{ user.nickname || profile?.steamID || user.steam_id }}
       </h3>
-
-      <div class="text-sm mb-1">
-        <span class="font-medium text-gray-600">Steam ID: </span>
-        {{ user.steam_id }}
-      </div>
 
       <div v-if="profile" class="flex items-center mb-1">
         <span
           class="inline-block w-2 h-2 rounded-full mr-1.5"
           :class="{
             'bg-green-500': profile.onlineState?.toLowerCase() === 'online',
-            'bg-yellow-500': profile.onlineState?.toLowerCase() === 'away',
+            'bg-blue-500': profile.onlineState?.toLowerCase() === 'in-game',
+            'bg-yellow-500': profile.onlineState?.toLowerCase() === 'away', // Cannot reproduce this state...
             'bg-gray-500': profile.onlineState?.toLowerCase() === 'offline',
           }"
         ></span>
-        <span>{{ profile.onlineState }}</span>
-        <span v-if="profile.stateMessage" class="ml-1"
-          >- {{ profile.stateMessage }}</span
-        >
+        <!-- prettier-ignore -->
+        <span v-if="profile.stateMessage" class="ml-1">
+          {{ profile.stateMessage.replace("<br/>", " ") }}
+        </span>
+      </div>
+
+      <div class="text-sm mb-1">
+        <span class="font-medium text-gray-600">Steam ID: </span>
+        {{ user.steam_id }}
       </div>
 
       <div v-if="profile?.memberSince" class="text-sm mb-1">
