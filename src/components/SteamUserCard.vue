@@ -9,67 +9,50 @@ defineProps<{
 
 <template>
   <div
-    class="flex border border-gray-200 rounded-lg p-4 mb-4 bg-gray-50 shadow-sm hover:shadow-xl transition-shadow"
+    class="flex border border-secondary rounded-lg p-4 mb-4 bg-sbg shadow-sm hover:shadow-xl transition-all hover:-translate-y-1 duration-300"
   >
-    <div v-if="profile?.avatarFull" class="mr-4">
+    <div v-if="profile?.avatarFull" class="mr-4 flex-shrink-0">
       <img
         :src="profile.avatarFull"
         alt="Steam Avatar"
-        class="w-24 h-24 rounded-md"
+        class="w-32 h-32 rounded-lg object-cover shadow-md transition-all duration-300"
+        :class="{
+          'border-4 border-green-500 shadow-lg':
+            profile.onlineState?.toLowerCase() === 'online',
+          'border-4 border-blue-500 shadow-lg':
+            profile.onlineState?.toLowerCase() === 'in-game',
+          'border-4 border-yellow-500 shadow-lg':
+            profile.onlineState?.toLowerCase() === 'away',
+          'border-4 border-gray-500':
+            profile.onlineState?.toLowerCase() === 'offline',
+        }"
       />
     </div>
 
     <div class="flex-1">
-      <h3 class="text-2xl font-semibold mb-1">
+      <h3 class="text-2xl font-semibold mb-1 text-text">
         {{ user.nickname || profile?.steamID || user.steam_id }}
+        <span class="text-sub text-md"
+          >({{ user.name_history.join(", ") }})</span
+        >
       </h3>
 
-      <div v-if="profile" class="flex items-center mb-1">
-        <span
-          class="inline-block w-2 h-2 rounded-full mr-1.5"
-          :class="{
-            'bg-green-500': profile.onlineState?.toLowerCase() === 'online',
-            'bg-blue-500': profile.onlineState?.toLowerCase() === 'in-game',
-            'bg-yellow-500': profile.onlineState?.toLowerCase() === 'away', // Cannot reproduce this state...
-            'bg-gray-500': profile.onlineState?.toLowerCase() === 'offline',
-          }"
-        ></span>
-        <!-- prettier-ignore -->
-        <span v-if="profile.stateMessage" class="ml-1">
-          {{ profile.stateMessage.replace("<br/>", " ") }}
+      <div class="text-md mb-1 mt-1">
+        <span class="text-text rounded-md font-medium max-w-fit text-md"
+          >{{ user.steam_id }}
         </span>
       </div>
 
-      <div class="text-sm mb-1">
-        <span class="font-medium text-gray-600">Steam ID: </span>
-        {{ user.steam_id }}
-      </div>
-
-      <div v-if="profile?.memberSince" class="text-sm mb-1">
-        <span class="font-medium text-gray-600">Member since: </span>
-        {{ profile.memberSince }}
-      </div>
-
-      <div v-if="user.name_history?.length" class="text-sm mb-1">
-        <span class="font-medium text-gray-600">Name history: </span>
-        <span class="text-gray-700">{{ user.name_history.join(", ") }}</span>
-      </div>
-
-      <div v-if="profile?.vacBanned === '1'" class="text-sm mb-1">
-        <span class="font-medium text-gray-600">VAC Status: </span>
-        <span class="text-red-600">Banned</span>
-      </div>
-
-      <div v-if="profile?.mostPlayedGames?.mostPlayedGame?.length" class="mt-2">
-        <span class="font-medium text-gray-600 text-sm">Most played: </span>
-        <div
-          class="text-sm text-gray-700"
-          v-for="(game, index) in profile.mostPlayedGames.mostPlayedGame"
-          :key="index"
+      <div v-if="profile?.vacBanned === '0'" class="text-sm mb-1">
+        <span
+          class="bg-[#f43f5e26] rounded-md p-1 text-[#f43f5e] text-bold text-sm"
+          >VAC Banned</span
         >
-          <img :src="game.gameLogo" class="w-24 h-8 inline-block mr-1" />
-          {{ game.hoursOnRecord }} hours
-        </div>
+      </div>
+
+      <div v-if="profile?.memberSince" class="text-sm mb-1 text-text">
+        <span class="font-medium text-sub">Member since: </span>
+        {{ profile.memberSince }}
       </div>
     </div>
   </div>

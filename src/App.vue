@@ -34,10 +34,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 min-h-screen">
+  <div class="mx-auto px-4 py-6 sm:px-6 lg:px-8 min-h-screen bg-bg">
     <header class="mb-8 text-center">
-      <h1 class="text-3xl font-bold text-gray-800">
-        Blazing Fast Steam Account Finder
+      <h1
+        class="p-2 text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent"
+      >
+        Steam Accounts Checker
       </h1>
     </header>
 
@@ -48,7 +50,7 @@ onMounted(() => {
     <div v-else>
       <UserSearch :users="steamUsers">
         <template #default="{ filteredUsers }">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="flex gap-4 justify-center">
             <SteamUserCard
               v-for="user in filteredUsers"
               :key="user.steam_id"
