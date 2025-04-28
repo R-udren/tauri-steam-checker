@@ -10,7 +10,7 @@ defineProps<{
       <div class="double-bounce1"></div>
       <div class="double-bounce2"></div>
     </div>
-    <p class="mt-4 text-xl text-gray-500 italic">
+    <p class="mt-4 text-xl text-sub italic">
       {{ message || "Loading..." }}
     </p>
   </div>
@@ -29,7 +29,7 @@ defineProps<{
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background-color: #4b5563;
+  background-color: var(--color-bg);
   opacity: 0.6;
   position: absolute;
   top: 0;
