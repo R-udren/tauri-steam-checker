@@ -40,7 +40,7 @@ defineEmits<{
       v-model="searchQuery"
       type="text"
       placeholder="Search by nickname, Steam ID or name history"
-      class="text-text w-full px-4 py-3 rounded-md border border-primary focus:outline-none focus:ring-2 focus:ring-primary transition duration-200"
+      class="text-text w-full px-4 py-3 rounded-md border-2 border-primary focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 hover:bg-sbg/20 hover:border-secondary"
     />
 
     <div class="mt-2 mb-4 flex justify-center align-center">

@@ -47,10 +47,13 @@ onMounted(() => {
 
     <LoadingSpinner v-if="isLoading" message="Loading Steam users..." />
 
-    <div v-else>
+    <div
+      v-else
+      class="flex flex-col max-w-6xl justify-center align-center mx-auto rounded-md p-8"
+    >
       <UserSearch :users="steamUsers">
         <template #default="{ filteredUsers }">
-          <div class="flex gap-4 justify-center">
+          <div class="flex flex-col gap-4 justify-center align-center mx-auto">
             <SteamUserCard
               v-for="user in filteredUsers"
               :key="user.steam_id"
