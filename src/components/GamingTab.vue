@@ -12,21 +12,21 @@ const props = defineProps<Props>();
 // Specific games to highlight
 const PRIORITY_GAMES = {
   252490: "Rust",
-  480: "Spacewar", 
-  730: "CS2"
+  480: "Spacewar",
+  730: "CS2",
 };
 
 // Priority games (Rust, Spacewar, CS2)
 const priorityGames = computed(() => {
   return props.user.apps
-    .filter(app => app.app_id in PRIORITY_GAMES)
+    .filter((app) => app.app_id in PRIORITY_GAMES)
     .sort((a, b) => b.playtime_minutes - a.playtime_minutes);
 });
 
 // Other games (excluding priority games)
 const otherGames = computed(() => {
   return props.user.apps
-    .filter(app => !(app.app_id in PRIORITY_GAMES))
+    .filter((app) => !(app.app_id in PRIORITY_GAMES))
     .sort((a, b) => b.playtime_minutes - a.playtime_minutes);
 });
 
@@ -84,6 +84,15 @@ function formatLastPlayed(timestamp: number): string {
   if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
   return date.toLocaleDateString();
 }
+
+function getGameHeaderUrl(appId: number): string {
+  return `https://cdn.cloudflare.steamstatic.com/steam/apps/${appId}/header.jpg`;
+}
+
+function hideImageOnError(event: Event) {
+  const target = event.target as HTMLImageElement | null;
+  if (target) target.style.display = "none";
+}
 </script>
 
 <template>
@@ -128,7 +137,6 @@ function formatLastPlayed(timestamp: number): string {
       >
         ⭐ Featured Games
       </h3>
-
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div
           v-for="game in priorityGames"
@@ -136,23 +144,24 @@ function formatLastPlayed(timestamp: number): string {
           class="flex items-center justify-between p-3 bg-primary/10 border border-primary/30 rounded-lg"
         >
           <div class="flex items-center gap-3">
-            <div
-              class="w-10 h-10 bg-primary/20 rounded border border-primary/40 flex items-center justify-center"
-            >
-              <span class="text-xs font-bold text-primary">{{
-                getGameName(game.app_id).slice(0, 2).toUpperCase()
-              }}</span>
-            </div>
+            <img
+              :src="getGameHeaderUrl(game.app_id)"
+              :alt="getGameName(game.app_id) + ' banner'"
+              class="w-32 h-16 object-cover rounded border border-primary/40 bg-bg-secondary"
+              loading="lazy"
+              title="Steam game banner"
+              @error="hideImageOnError"
+            />
             <div>
-              <div class="text-sm font-medium text-text">
+              <div class="font-medium text-text">
                 {{ getGameName(game.app_id) }}
               </div>
-              <div class="text-xs text-text-muted">
+              <div class="text-sm text-text-muted">
                 {{ formatLastPlayed(game.last_played) }}
               </div>
             </div>
           </div>
-          <div class="text-sm font-mono text-primary font-medium">
+          <div class="font-mono font-semibold text-white">
             {{ formatHours(game.playtime_minutes) }}
           </div>
         </div>
@@ -168,11 +177,12 @@ function formatLastPlayed(timestamp: number): string {
           <span class="group-open:rotate-90 transition-transform">▶</span>
           👀 Other Games ({{ otherGames.length }})
         </summary>
-
         <div class="mt-3 space-y-4">
           <!-- Top Other Games -->
           <div v-if="topOtherGames.length > 0">
-            <h4 class="text-xs font-medium text-text-muted mb-2 uppercase tracking-wide">
+            <h4
+              class="text-xs font-medium text-text-muted mb-2 uppercase tracking-wide"
+            >
               Most Played
             </h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -182,13 +192,14 @@ function formatLastPlayed(timestamp: number): string {
                 class="flex items-center justify-between p-2 bg-bg-tertiary rounded border border-border"
               >
                 <div class="flex items-center gap-2">
-                  <div
-                    class="w-8 h-8 bg-bg-secondary rounded border border-border flex items-center justify-center"
-                  >
-                    <span class="text-xs text-text-muted">{{
-                      game.app_id.toString().slice(-2)
-                    }}</span>
-                  </div>
+                  <img
+                    :src="getGameHeaderUrl(game.app_id)"
+                    :alt="getGameName(game.app_id) + ' banner'"
+                    class="w-24 h-12 object-cover rounded border border-border bg-bg-secondary"
+                    loading="lazy"
+                    title="Steam game banner"
+                    @error="hideImageOnError"
+                  />
                   <div>
                     <div class="text-xs font-medium text-text">
                       App {{ game.app_id }}
@@ -207,7 +218,9 @@ function formatLastPlayed(timestamp: number): string {
 
           <!-- Recent Other Games -->
           <div v-if="recentOtherGames.length > 0">
-            <h4 class="text-xs font-medium text-text-muted mb-2 uppercase tracking-wide">
+            <h4
+              class="text-xs font-medium text-text-muted mb-2 uppercase tracking-wide"
+            >
               Recently Played
             </h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -217,13 +230,14 @@ function formatLastPlayed(timestamp: number): string {
                 class="flex items-center justify-between p-2 bg-bg-tertiary rounded border border-border"
               >
                 <div class="flex items-center gap-2">
-                  <div
-                    class="w-8 h-8 bg-bg-secondary rounded border border-border flex items-center justify-center"
-                  >
-                    <span class="text-xs text-text-muted">{{
-                      game.app_id.toString().slice(-2)
-                    }}</span>
-                  </div>
+                  <img
+                    :src="getGameHeaderUrl(game.app_id)"
+                    :alt="getGameName(game.app_id) + ' banner'"
+                    class="w-24 h-12 object-cover rounded border border-border bg-bg-secondary"
+                    loading="lazy"
+                    title="Steam game banner"
+                    @error="hideImageOnError"
+                  />
                   <div>
                     <div class="text-xs font-medium text-text">
                       App {{ game.app_id }}
@@ -244,7 +258,10 @@ function formatLastPlayed(timestamp: number): string {
     </div>
 
     <!-- Empty State -->
-    <div v-if="priorityGames.length === 0 && otherGames.length === 0" class="text-center py-8">
+    <div
+      v-if="priorityGames.length === 0 && otherGames.length === 0"
+      class="text-center py-8"
+    >
       <div class="text-4xl mb-2">🎮</div>
       <div class="text-text-muted">No game data available</div>
     </div>
