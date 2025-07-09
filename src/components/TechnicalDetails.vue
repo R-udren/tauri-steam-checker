@@ -2,7 +2,6 @@
 import { computed } from "vue";
 import type { FetchedProfile, SteamUser } from "../types";
 import CopyButton from "./CopyButton.vue";
-import DataSourceIndicator from "./DataSourceIndicator.vue";
 import ExpandableSection from "./ExpandableSection.vue";
 
 interface Props {
@@ -21,15 +20,6 @@ const identifiers = computed(() => {
       value: props.user.steam_id,
       source: "local" as const,
       description: "Primary Steam identifier",
-    });
-  }
-
-  if (props.profile?.steamID64) {
-    ids.push({
-      label: "Steam ID64",
-      value: props.profile.steamID64,
-      source: "remote" as const,
-      description: "64-bit Steam identifier",
     });
   }
 
@@ -107,125 +97,107 @@ function formatNameHistory(nameHistory: string[]) {
 const formattedNameHistory = computed(() => {
   return formatNameHistory(props.user.name_history || []);
 });
+
+const hasDataSources = computed(() => {
+  return dataSources.value.length > 0 || props.user.time_stamp;
+});
 </script>
 
 <template>
   <div class="space-y-4">
-    <!-- Name History -->
-    <ExpandableSection
-      title="Name History"
-      icon="📝"
-      :count="user.name_history?.length || 0"
-      :default-expanded="false"
-    >
-      <div class="space-y-2">
-        <div class="text-xs text-sub mb-3 flex items-center gap-2">
-          💻 Local name change history
-        </div>
-
-        <div
-          v-if="formattedNameHistory.length === 0"
-          class="text-sm text-sub text-center py-4"
+    <!-- Steam Identifiers - Steam UI Style -->
+    <div v-if="identifiers.length > 0" class="space-y-3">
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-sub uppercase tracking-wide"
+          >Steam Identifiers</span
         >
-          No previous names recorded
+        <div class="h-px bg-secondary/30 flex-1"></div>
+      </div>
+
+      <div class="grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2 text-sm">
+        <div v-for="id in identifiers" :key="id.label" class="space-y-1">
+          <div class="text-xs text-sub uppercase tracking-wide">
+            {{ id.label }}
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-text font-mono text-sm">{{ id.value }}</span>
+            <CopyButton :value="id.value" size="sm" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Name History - Compact Display -->
+    <div v-if="formattedNameHistory.length > 0" class="space-y-3">
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-sub uppercase tracking-wide"
+          >Previous Names</span
+        >
+        <div class="h-px bg-secondary/30 flex-1"></div>
+        <span class="text-xs text-sub">{{ formattedNameHistory.length }}</span>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        <div
+          v-for="(entry, index) in formattedNameHistory.slice(0, 8)"
+          :key="index"
+          class="flex items-center gap-1 px-2 py-1 bg-sbg/30 rounded text-sm border border-secondary/30"
+        >
+          <span class="text-text">{{ entry.name }}</span>
+          <CopyButton :value="entry.name" size="sm" />
         </div>
 
-        <div v-else class="space-y-2">
-          <div
-            v-for="entry in formattedNameHistory"
-            class="flex items-center justify-between p-2 rounded bg-sbg/20 border border-secondary/30"
-          >
-            <div class="flex items-center gap-3">
+        <ExpandableSection
+          v-if="formattedNameHistory.length > 8"
+          title="View All Names"
+          icon="📝"
+          :count="formattedNameHistory.length"
+          :default-expanded="false"
+        >
+          <div class="grid grid-cols-2 gap-2">
+            <div
+              v-for="(entry, index) in formattedNameHistory"
+              :key="index"
+              class="flex items-center justify-between p-2 bg-sbg/20 rounded border border-secondary/30"
+            >
               <span class="text-sm text-text">{{ entry.name }}</span>
-            </div>
-            <div class="flex items-center gap-2">
               <CopyButton :value="entry.name" size="sm" />
             </div>
           </div>
-        </div>
+        </ExpandableSection>
       </div>
-    </ExpandableSection>
+    </div>
 
-    <!-- Data Sources & Metadata -->
-    <ExpandableSection
-      title="Data Sources"
-      icon="📊"
-      :count="dataSources.length"
-      :default-expanded="false"
-    >
-      <div class="space-y-3">
+    <!-- Data Sources - Only if has meaningful data -->
+    <div v-if="hasDataSources" class="space-y-3">
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-sub uppercase tracking-wide"
+          >Data Sources</span
+        >
+        <div class="h-px bg-secondary/30 flex-1"></div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
         <div
           v-for="source in dataSources"
           :key="source.label"
-          class="p-3 bg-sbg/20 rounded border border-secondary/30"
+          class="space-y-1"
         >
-          <div class="flex items-center justify-between mb-2">
-            <div class="flex items-center gap-2">
-              <span class="font-medium text-text text-sm">{{
-                source.label
-              }}</span>
-              <DataSourceIndicator :source="source.source" compact />
-            </div>
+          <div class="text-xs text-sub uppercase tracking-wide">
+            {{ source.label }}
           </div>
-          <div class="text-sm text-text">
-            {{ source.value }}
-          </div>
-          <div class="text-xs text-sub mt-1">
-            {{ source.description }}
-          </div>
+          <div class="text-text font-medium">{{ source.value }}</div>
         </div>
 
-        <!-- Timestamps -->
-        <div
-          v-if="user.time_stamp"
-          class="p-3 bg-sbg/20 rounded border border-secondary/30"
-        >
-          <div class="flex items-center gap-2 mb-2">
-            <span class="font-medium text-text text-sm">Last Updated</span>
-            <DataSourceIndicator
-              source="local"
-              :last-updated="user.time_stamp"
-              compact
-            />
+        <div v-if="user.time_stamp" class="space-y-1">
+          <div class="text-xs text-sub uppercase tracking-wide">
+            Last Updated
           </div>
-          <div class="text-sm text-text">
-            {{ new Date(user.time_stamp * 1000).toLocaleString() }}
-          </div>
-          <div class="text-xs text-sub mt-1">
-            When this local data was last collected
+          <div class="text-text font-medium">
+            {{ new Date(user.time_stamp * 1000).toLocaleDateString() }}
           </div>
         </div>
       </div>
-    </ExpandableSection>
-
-    <!-- Profile Details -->
-    <ExpandableSection
-      v-if="profileDetails.length > 0"
-      title="Profile Details"
-      icon="👤"
-      :count="profileDetails.length"
-      :default-expanded="false"
-    >
-      <div class="space-y-3">
-        <div
-          v-for="detail in profileDetails"
-          :key="detail.label"
-          class="p-3 bg-sbg/20 rounded border border-secondary/30"
-        >
-          <div class="flex items-center gap-2 mb-2">
-            <span class="font-medium text-text text-sm">{{
-              detail.label
-            }}</span>
-            <DataSourceIndicator :source="detail.source" compact />
-          </div>
-          <div class="text-sm text-text break-words">
-            {{ detail.value }}
-          </div>
-          <div class="text-xs text-sub mt-1">
-            {{ detail.description }}
-          </div>
-        </div>
-      </div>
-    </ExpandableSection>
+    </div>
   </div>
 </template>

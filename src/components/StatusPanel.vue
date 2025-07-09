@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import type { FetchedProfile, SteamUser } from "../types";
-import DataSourceIndicator from "./DataSourceIndicator.vue";
 import StatusBadge from "./StatusBadge.vue";
 
 interface Props {
@@ -41,63 +40,6 @@ const securityBadges = computed(() => {
   return badges;
 });
 
-const accountInfo = computed(() => {
-  const info = [];
-
-  if (props.profile?.memberSince) {
-    info.push({
-      label: "Member since",
-      value: props.profile.memberSince,
-      source: "remote" as const,
-    });
-  }
-
-  if (props.profile?.VisibilityState) {
-    const visibilityMap: Record<string, string> = {
-      "1": "Private",
-      "2": "Friends Only",
-      "3": "Public",
-    };
-    info.push({
-      label: "Profile",
-      value: visibilityMap[props.profile.VisibilityState] || "Unknown",
-      source: "remote" as const,
-    });
-  }
-
-  return info;
-});
-
-const activityInfo = computed(() => {
-  const info = [];
-
-  if (props.user.time_stamp) {
-    info.push({
-      label: "Last activity",
-      value: props.user.time_stamp,
-      source: "local" as const,
-    });
-  }
-
-  if (props.profile?.onlineState) {
-    info.push({
-      label: "Status",
-      value: props.profile.onlineState,
-      source: "remote" as const,
-    });
-  }
-
-  if (props.profile?.stateMessage) {
-    info.push({
-      label: "Status message",
-      value: props.profile.stateMessage,
-      source: "remote" as const,
-    });
-  }
-
-  return info;
-});
-
 function getFancyDatetime(timestamp: number) {
   const date = new Date(timestamp * 1000);
   return date
@@ -130,70 +72,114 @@ function getTimeAgo(timestamp: number) {
   if (interval > 1) return `${interval} minutes ago`;
   return `${seconds} seconds ago`;
 }
+
+function getVisibilityText(state: string) {
+  const visibilityMap: Record<string, string> = {
+    "1": "Private",
+    "2": "Friends Only",
+    "3": "Public",
+  };
+  return visibilityMap[state] || "Unknown";
+}
+
+function getStatusIcon(status: string) {
+  const iconMap: Record<string, string> = {
+    online: "🟢",
+    "in-game": "🎮",
+    away: "🟡",
+    offline: "⚫",
+  };
+  return iconMap[status.toLowerCase()] || "❓";
+}
 </script>
 
 <template>
-  <div
-    class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border-b border-secondary/30"
-  >
-    <!-- Security Status -->
-    <div class="space-y-2">
-      <h3 class="text-sm font-semibold text-text mb-2">Security Status</h3>
-      <div v-if="securityBadges.length > 0" class="flex flex-wrap gap-2">
+  <div class="p-4 border-b border-secondary/30">
+    <!-- Security Status Row -->
+    <div class="flex items-center gap-6 mb-4">
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-sub uppercase tracking-wide">Security</span>
+        <div class="h-px bg-secondary/30 flex-1 w-12"></div>
+      </div>
+      <div class="flex gap-2">
         <StatusBadge
+          v-if="securityBadges.length > 0"
           v-for="badge in securityBadges"
           :key="badge.status"
           :type="badge.type"
           :status="badge.status"
           :icon="badge.icon"
         />
-      </div>
-      <div v-else class="text-sm text-sub">
-        <StatusBadge type="online" status="Clean Account" icon="✅" />
+        <StatusBadge v-else type="online" status="Clean Account" icon="✅" />
       </div>
     </div>
 
-    <!-- Account Information -->
-    <div class="space-y-2">
-      <h3 class="text-sm font-semibold text-text mb-2">Account Info</h3>
-      <div class="space-y-1">
-        <div
-          v-for="info in accountInfo"
-          :key="info.label"
-          class="flex items-center justify-between text-sm"
-        >
-          <span class="text-sub">{{ info.label }}:</span>
-          <div class="flex items-center gap-2">
-            <span class="text-text">{{ info.value }}</span>
-            <DataSourceIndicator :source="info.source" compact />
-          </div>
+    <!-- Info Grid - Steam UI Style -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-3 text-sm">
+      <!-- Member Since -->
+      <div v-if="profile?.memberSince" class="space-y-1">
+        <div class="text-xs text-sub uppercase tracking-wide">
+          Account created
+        </div>
+        <div class="text-text font-medium">{{ profile.memberSince }}</div>
+      </div>
+
+      <!-- Profile Privacy -->
+      <div v-if="profile?.VisibilityState" class="space-y-1">
+        <div class="text-xs text-sub uppercase tracking-wide">Privacy</div>
+        <div class="text-text font-medium">
+          {{ getVisibilityText(profile.VisibilityState) }}
         </div>
       </div>
-    </div>
 
-    <!-- Activity Information -->
-    <div class="space-y-2">
-      <h3 class="text-sm font-semibold text-text mb-2">Activity</h3>
-      <div class="space-y-1">
-        <div v-for="info in activityInfo" :key="info.label" class="text-sm">
-          <div class="flex items-center justify-between">
-            <span class="text-sub">{{ info.label }}:</span>
-            <DataSourceIndicator :source="info.source" compact />
-          </div>
-          <div class="mt-1">
-            <span
-              v-if="
-                info.label === 'Last activity' && typeof info.value === 'number'
-              "
-              class="text-text"
-            >
-              {{ getFancyDatetime(info.value) }}
-              <span class="text-sub text-xs">
-                ({{ getTimeAgo(info.value) }})
-              </span>
-            </span>
-            <span v-else class="text-text">{{ info.value }}</span>
-          </div>
+      <!-- Last Activity -->
+      <div v-if="user.time_stamp" class="space-y-1">
+        <div class="text-xs text-sub uppercase tracking-wide">Last seen</div>
+        <div class="text-text font-medium">
+          {{ getFancyDatetime(user.time_stamp) }}
+        </div>
+        <div class="text-xs text-sub">{{ getTimeAgo(user.time_stamp) }}</div>
+      </div>
+
+      <!-- Online Status -->
+      <div v-if="profile?.onlineState" class="space-y-1">
+        <div class="text-xs text-sub uppercase tracking-wide">Status</div>
+        <div class="text-text font-medium flex items-center gap-2">
+          {{ profile.onlineState }}
+          <span class="text-xs">{{ getStatusIcon(profile.onlineState) }}</span>
+        </div>
+      </div>
+
+      <!-- Location -->
+      <div v-if="profile?.location" class="space-y-1">
+        <div class="text-xs text-sub uppercase tracking-wide">Location</div>
+        <div class="text-text font-medium">{{ profile.location }}</div>
+      </div>
+
+      <!-- Trade Ban Status -->
+      <div
+        v-if="profile?.tradeBanState && profile.tradeBanState !== 'None'"
+        class="space-y-1"
+      >
+        <div class="text-xs text-sub uppercase tracking-wide">Trade status</div>
+        <div class="text-orange-400 font-medium">
+          {{ profile.tradeBanState }}
+        </div>
+      </div>
+
+      <!-- Limited Account -->
+      <div v-if="profile?.isLimitedAccount === '1'" class="space-y-1">
+        <div class="text-xs text-sub uppercase tracking-wide">Account type</div>
+        <div class="text-yellow-400 font-medium">Limited</div>
+      </div>
+
+      <!-- Status Message -->
+      <div v-if="profile?.stateMessage" class="space-y-1 col-span-2">
+        <div class="text-xs text-sub uppercase tracking-wide">
+          Status message
+        </div>
+        <div class="text-text font-medium italic">
+          "{{ profile.stateMessage }}"
         </div>
       </div>
     </div>

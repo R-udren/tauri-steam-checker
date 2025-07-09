@@ -14,7 +14,6 @@ const props = defineProps<Props>();
 const showAllGames = ref(false);
 
 const gamingStats = computed(() => {
-  console.log("Apps: ", props.user.app_list);
   const totalGames = props.user.app_list.length;
   const totalMinutes = props.user.app_list.reduce(
     (sum, app) => sum + app.playtime_minutes,
@@ -59,40 +58,36 @@ const mostPlayedFromProfile = computed(() => {
 </script>
 
 <template>
-  <div class="p-4 space-y-4">
-    <!-- Gaming Statistics -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-      <div
-        class="text-center p-3 bg-sbg/30 rounded-lg border border-secondary/30"
-      >
-        <div class="text-2xl font-bold text-text">
+  <!-- Only show if user has games -->
+  <div
+    v-if="user.app_list && user.app_list.length > 0"
+    class="px-4 py-3 space-y-3"
+  >
+    <!-- Gaming Statistics - Steam UI Style -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+      <div class="text-center space-y-1">
+        <div class="text-xs text-sub uppercase tracking-wide">Total Games</div>
+        <div class="text-lg font-bold text-text">
           {{ gamingStats.totalGames }}
         </div>
-        <div class="text-xs text-sub">Total Games</div>
       </div>
-      <div
-        class="text-center p-3 bg-sbg/30 rounded-lg border border-secondary/30"
-      >
-        <div class="text-2xl font-bold text-text">
+      <div class="text-center space-y-1">
+        <div class="text-xs text-sub uppercase tracking-wide">Played</div>
+        <div class="text-lg font-bold text-text">
           {{ gamingStats.playedGames }}
         </div>
-        <div class="text-xs text-sub">Played</div>
       </div>
-      <div
-        class="text-center p-3 bg-sbg/30 rounded-lg border border-secondary/30"
-      >
-        <div class="text-2xl font-bold text-text">
+      <div class="text-center space-y-1">
+        <div class="text-xs text-sub uppercase tracking-wide">Total Hours</div>
+        <div class="text-lg font-bold text-text">
           {{ gamingStats.totalHours }}h
         </div>
-        <div class="text-xs text-sub">Total Playtime</div>
       </div>
-      <div
-        class="text-center p-3 bg-sbg/30 rounded-lg border border-secondary/30"
-      >
-        <div class="text-2xl font-bold text-text">
+      <div class="text-center space-y-1">
+        <div class="text-xs text-sub uppercase tracking-wide">Recent</div>
+        <div class="text-lg font-bold text-text">
           {{ gamingStats.recentGames }}
         </div>
-        <div class="text-xs text-sub">Recently Played</div>
       </div>
     </div>
 

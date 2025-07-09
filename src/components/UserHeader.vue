@@ -66,36 +66,30 @@ function getNicknameHistory(nameHistory: Array<string>) {
 </script>
 
 <template>
-  <div class="flex items-start gap-4 p-4 border-b border-secondary/30">
+  <div class="flex items-start gap-4 px-4 py-3 border-b border-secondary/30">
     <!-- Avatar Section -->
-    <div v-if="profile?.avatarFull" class="flex-shrink-0 relative">
+    <div v-if="profile?.avatarFull" class="flex-shrink-0">
       <img
         :src="profile.avatarFull"
         alt="Steam Avatar"
-        class="w-24 h-24 rounded-xl object-cover shadow-md transition-all duration-300"
+        class="w-20 h-20 rounded-xl object-cover shadow-md transition-all duration-300"
         :class="avatarBorderClass"
       />
-
-      <!-- Online Status Indicator -->
-      <div
-        v-if="onlineStatusInfo"
-        class="absolute -bottom-1 -right-1 bg-sbg rounded-full p-1 border-2 border-sbg"
-      >
-        <StatusBadge
-          :type="onlineStatusInfo.type"
-          :status="onlineStatusInfo.label"
-          :icon="onlineStatusInfo.icon"
-        />
-      </div>
     </div>
 
     <!-- User Info Section -->
     <div class="flex-1 min-w-0">
-      <!-- Primary Name -->
-      <div class="flex items-center gap-2 mb-2">
+      <!-- Primary Name with Online Status -->
+      <div class="flex items-center gap-3 mb-2">
         <h2 class="text-2xl font-bold text-text truncate">
           {{ displayName }}
         </h2>
+        <StatusBadge
+          v-if="onlineStatusInfo"
+          :type="onlineStatusInfo.type"
+          :status="onlineStatusInfo.label"
+          :icon="onlineStatusInfo.icon"
+        />
         <DataSourceIndicator
           source="local"
           :last-updated="user.time_stamp"

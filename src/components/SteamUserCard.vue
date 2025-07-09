@@ -22,14 +22,10 @@ defineProps<{
     <StatusPanel :user="user" :profile="profile" />
 
     <!-- Gaming Dashboard Section -->
-    <GamingDashboard
-      :user="user"
-      :profile="profile"
-      v-if="user.app_list && user.app_list.length > 0"
-    />
+    <GamingDashboard :user="user" :profile="profile" />
 
     <!-- Technical Details Section -->
-    <div class="p-4">
+    <div class="px-4 pb-3">
       <TechnicalDetails :user="user" :profile="profile" />
     </div>
   </div>

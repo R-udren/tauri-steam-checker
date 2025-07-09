@@ -23,17 +23,17 @@ function toggleExpanded() {
 </script>
 
 <template>
-  <div class="border border-secondary/50 rounded-lg bg-sbg/50">
+  <div class="border border-secondary/30 rounded-lg bg-sbg/30 mb-3">
     <button
       @click="toggleExpanded"
       class="w-full flex items-center justify-between p-3 hover:bg-secondary/20 transition-colors rounded-lg"
     >
       <div class="flex items-center gap-2">
         <span v-if="icon" class="text-sm">{{ icon }}</span>
-        <span class="font-medium text-text">{{ title }}</span>
+        <span class="font-medium text-text text-sm">{{ title }}</span>
         <span
           v-if="count !== undefined"
-          class="text-xs text-sub bg-secondary/30 px-2 py-0.5 rounded-full"
+          class="text-xs text-sub bg-secondary/30 px-1.5 py-0.5 rounded-full"
         >
           {{ count }}
         </span>
@@ -55,15 +55,15 @@ function toggleExpanded() {
     </button>
 
     <Transition
-      enter-active-class="transition-all duration-300 ease-out"
+      enter-active-class="transition-all duration-200 ease-out"
       enter-from-class="opacity-0 max-h-0"
-      enter-to-class="opacity-100 max-h-96"
-      leave-active-class="transition-all duration-300 ease-in"
-      leave-from-class="opacity-100 max-h-96"
+      enter-to-class="opacity-100"
+      leave-active-class="transition-all duration-200 ease-in"
+      leave-from-class="opacity-100"
       leave-to-class="opacity-0 max-h-0"
     >
       <div v-show="isExpanded" class="overflow-hidden">
-        <div ref="contentRef" class="p-3 pt-0 border-t border-secondary/30">
+        <div ref="contentRef" class="px-3 pb-3 border-t border-secondary/30">
           <slot />
         </div>
       </div>
