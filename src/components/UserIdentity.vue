@@ -52,8 +52,13 @@ const statusLabel = computed(() => {
     <div class="flex-shrink-0">
       <img
         :src="profile?.avatarFull || '/default-avatar.png'"
-        :alt="`${displayName} avatar`"
+        :alt="`${
+          displayName.profileName ||
+          displayName.userNickname ||
+          displayName.steamId
+        } avatar`"
         class="size-24 rounded-lg border border-border-light"
+        title="Steam profile avatar"
       />
     </div>
 
@@ -62,36 +67,63 @@ const statusLabel = computed(() => {
       <!-- Name Row -->
       <div class="flex items-center justify-between">
         <h2 class="text-2xl font-semibold text-text truncate">
-          <span v-if="displayName.profileName" class="mr-1">
+          <span
+            v-if="displayName.profileName"
+            class="mr-1"
+            title="Current Steam profile name (from Steam)"
+          >
             {{ displayName.profileName }}
           </span>
-          <span v-if="displayName.userNickname" class="text-text-secondary">
+          <span
+            v-if="displayName.userNickname"
+            class="text-text-secondary"
+            title="Local nickname (from local data)"
+          >
             ({{ displayName.userNickname }})
           </span>
         </h2>
         <div class="flex items-center gap-2 flex-shrink-0">
-          <StatusBadge :type="onlineStatus" :status="statusLabel" />
-          <StatusBadge v-if="user.most_recent" type="online" status="Latest" />
+          <StatusBadge
+            :type="onlineStatus"
+            :status="statusLabel"
+            title="Current online status"
+          />
+          <StatusBadge
+            v-if="user.most_recent"
+            type="online"
+            status="Latest"
+            title="This is the most recent data"
+          />
         </div>
       </div>
 
       <!-- Steam ID Row -->
       <div class="flex items-center gap-2">
-        <span class="text-sm text-text-muted">Steam ID:</span>
+        <span
+          class="text-sm text-text-muted"
+          title="Unique 64-bit Steam identifier"
+          >Steam ID:</span
+        >
         <code
           class="text-sm font-mono text-text-secondary bg-bg-tertiary px-2 py-1 rounded border border-border"
+          title="Unique 64-bit Steam identifier"
         >
           {{ user.steam_id }}
         </code>
-        <CopyButton :value="user.steam_id" />
+        <CopyButton :value="user.steam_id" label="Copy Steam ID" />
       </div>
 
       <!-- Previous Names Row -->
       <div v-if="allNames.length > 0" class="flex items-center flex-wrap gap-1">
-        <span class="text-xs text-text-muted">Previously:</span>
+        <span
+          class="text-xs text-text-muted"
+          title="Previous Steam profile names"
+          >Previously:</span
+        >
         <template v-for="(name, index) in allNames" :key="name">
           <span
             class="text-xs text-text-secondary bg-bg-tertiary px-2 py-0.5 rounded"
+            title="Previous Steam profile name"
           >
             {{ name }}
           </span>
