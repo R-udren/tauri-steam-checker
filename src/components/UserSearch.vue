@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import type { SteamUser } from "../types.ts";
+import type { FetchedProfile, SteamUser } from "../types.ts";
 import CopyButton from "./CopyButton.vue";
 
 const props = defineProps<{
   users: SteamUser[];
+  profiles?: Map<string, FetchedProfile>;
 }>();
 
 const searchQuery = ref("");
@@ -14,6 +15,7 @@ const filteredUsers = computed(() => {
   const query = searchQuery.value.toLowerCase().trim();
 
   return props.users.filter((user) => {
+    // Check local user data
     // Check nickname (if exists)
     if (user.nickname?.toLowerCase().includes(query)) return true;
 
@@ -25,13 +27,31 @@ const filteredUsers = computed(() => {
       return true;
     }
 
+    // Check fetched profile data (if available)
+    if (props.profiles) {
+      const profile = props.profiles.get(user.steam_id);
+      if (profile) {
+        // Check profile nickname/steamID
+        if (profile.steamID?.toLowerCase().includes(query)) return true;
+
+        // Check real name
+        if (profile.realname?.toLowerCase().includes(query)) return true;
+
+        // Check custom URL
+        if (profile.customURL?.toLowerCase().includes(query)) return true;
+
+        // Check profile summary
+        if (profile.summary?.toLowerCase().includes(query)) return true;
+      }
+    }
+
     return false;
   });
 });
 
 // All Steam IDs for copying
 const allSteamIDs = computed(() => {
-  return props.users.map(user => user.steam_id).join(' ');
+  return props.users.map((user) => user.steam_id).join(" ");
 });
 
 // Emit the filtered users to parent
@@ -47,12 +67,12 @@ defineEmits<{
       <input
         v-model="searchQuery"
         type="text"
-        placeholder="Search by nickname, Steam ID or name history"
+        placeholder="Search by nickname, Steam ID, name history, real name, location, or status..."
         class="text-text flex-1 px-4 py-3 rounded-md border-2 border-primary focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 hover:bg-sbg/20 hover:border-secondary"
       />
-      
-      <CopyButton 
-        :value="allSteamIDs" 
+
+      <CopyButton
+        :value="allSteamIDs"
         label="Copy All IDs"
         size="md"
         class="px-4 py-3 bg-primary hover:bg-primary-hover text-white rounded-md"

@@ -50,7 +50,7 @@ const statusLabel = computed(() => {
       <img
         :src="profile?.avatarFull || '/default-avatar.png'"
         :alt="`${displayName} avatar`"
-        class="w-16 h-16 rounded-lg border border-border-light"
+        class="size-24 rounded-lg border border-border-light"
       />
     </div>
 
@@ -58,7 +58,7 @@ const statusLabel = computed(() => {
     <div class="flex-1 min-w-0 space-y-2">
       <!-- Name Row -->
       <div class="flex items-center justify-between">
-        <h2 class="text-xl font-semibold text-text truncate">
+        <h2 class="text-2xl font-semibold text-text truncate">
           {{ displayName }}
         </h2>
         <div class="flex items-center gap-2 flex-shrink-0">

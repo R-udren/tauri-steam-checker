@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import ErrorMessage from "./components/ErrorMessage.vue";
 import LoadingSpinner from "./components/LoadingSpinner.vue";
 import SteamUserCard from "./components/SteamUserCard.vue";
@@ -28,6 +28,15 @@ const getProfileForUser = (steamId: string) => {
   return fetchedProfiles.value.find((profile) => profile.steamID64 === steamId);
 };
 
+// Convert profiles array to Map for efficient searching
+const profilesMap = computed(() => {
+  const map = new Map();
+  fetchedProfiles.value.forEach((profile) => {
+    map.set(profile.steamID64, profile);
+  });
+  return map;
+});
+
 onMounted(() => {
   getSteamUsers();
 });
@@ -51,7 +60,7 @@ onMounted(() => {
       v-else
       class="flex flex-col max-w-6xl justify-center align-center mx-auto rounded-md p-8"
     >
-      <UserSearch :users="steamUsers">
+      <UserSearch :users="steamUsers" :profiles="profilesMap">
         <template #default="{ filteredUsers }">
           <div class="flex flex-col gap-4 justify-center align-center mx-auto">
             <SteamUserCard
