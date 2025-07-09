@@ -1,16 +1,36 @@
 @import "tailwindcss";
 
 @theme {
-  --color-text: #cfd8dc;
-  --color-sub: #a1a9b7;
-  --color-bg: #1c1e24;
-  --color-sbg: #343641;
-  --color-primary: #6689fc;
-  --color-secondary: #7282c9;
-  --color-accent: #d17dbd;
+  /* High contrast dark theme colors */
+  --color-text: #ffffff;
+  --color-text-secondary: #e2e8f0;
+  --color-text-muted: #94a3b8;
+  --color-sub: #64748b;
 
-  --color-info: #74c7ec;
-  --color-success: #4caf50;
-  --color-error: #ef5350;
-  --color-deactivated: #545862;
+  --color-bg: #0f172a;
+  --color-bg-secondary: #1e293b;
+  --color-bg-tertiary: #151e2c;
+  --color-sbg: #1c242e;
+
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
+  --color-secondary: #6366f1;
+  --color-accent: #ec4899;
+
+  --color-border: #374151;
+  --color-border-light: #4b5563;
+
+  --color-info: #06b6d4;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-deactivated: #6b7280;
+
+  /* Steam-inspired colors */
+  --color-steam-blue: #1b2838;
+  --color-steam-light-blue: #2a475e;
+  --color-online: #57cbde;
+  --color-offline: #898989;
+  --color-away: #d2d160;
+  --color-busy: #cd5c5c;
 }

@@ -14,17 +14,15 @@ const props = defineProps<Props>();
 const showAllGames = ref(false);
 
 const gamingStats = computed(() => {
-  const totalGames = props.user.app_list.length;
-  const totalMinutes = props.user.app_list.reduce(
+  const totalGames = props.user.apps.length;
+  const totalMinutes = props.user.apps.reduce(
     (sum, app) => sum + app.playtime_minutes,
     0
   );
   const totalHours = Math.round((totalMinutes / 60) * 10) / 10;
 
-  const playedGames = props.user.app_list.filter(
-    (app) => app.playtime_minutes > 0
-  );
-  const recentGames = props.user.app_list
+  const playedGames = props.user.apps.filter((app) => app.playtime_minutes > 0);
+  const recentGames = props.user.apps
     .filter((app) => app.last_played > 0)
     .sort((a, b) => b.last_played - a.last_played);
 
@@ -37,14 +35,14 @@ const gamingStats = computed(() => {
 });
 
 const topGamesByPlaytime = computed(() => {
-  return [...props.user.app_list]
+  return [...props.user.apps]
     .filter((app) => app.playtime_minutes > 0)
     .sort((a, b) => b.playtime_minutes - a.playtime_minutes)
     .slice(0, 8);
 });
 
 const recentGames = computed(() => {
-  return [...props.user.app_list]
+  return [...props.user.apps]
     .filter((app) => app.last_played > 0)
     .sort((a, b) => b.last_played - a.last_played)
     .slice(0, 5);
@@ -59,10 +57,7 @@ const mostPlayedFromProfile = computed(() => {
 
 <template>
   <!-- Only show if user has games -->
-  <div
-    v-if="user.app_list && user.app_list.length > 0"
-    class="px-4 py-3 space-y-3"
-  >
+  <div v-if="user.apps && user.apps.length > 0" class="px-4 py-3 space-y-3">
     <!-- Gaming Statistics - Steam UI Style -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
       <div class="text-center space-y-1">
@@ -216,7 +211,7 @@ const mostPlayedFromProfile = computed(() => {
           class="grid grid-cols-1 lg:grid-cols-2 gap-2 max-h-96 overflow-y-auto"
         >
           <GamePreviewCard
-            v-for="app in user.app_list.slice(0, 20)"
+            v-for="app in user.apps.slice(0, 20)"
             :key="app.app_id"
             :app="app"
             :show-playtime="true"
@@ -225,11 +220,8 @@ const mostPlayedFromProfile = computed(() => {
           />
         </div>
 
-        <div
-          v-if="user.app_list.length > 20"
-          class="text-xs text-center text-sub"
-        >
-          Showing first 20 of {{ user.app_list.length }} games
+        <div v-if="user.apps.length > 20" class="text-xs text-center text-sub">
+          Showing first 20 of {{ user.apps.length }} games
         </div>
       </div>
     </ExpandableSection>

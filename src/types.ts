@@ -5,7 +5,7 @@ export interface SteamUser {
   most_recent: boolean;
   sources: Array<string>;
   time_stamp?: number;
-  app_list: Array<App>;
+  apps: Array<App>;
 }
 
 export interface App {

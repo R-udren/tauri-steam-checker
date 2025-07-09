@@ -1,32 +1,50 @@
 <script setup lang="ts">
-import type { FetchedProfile, SteamUser } from "../types.ts";
-import GamingDashboard from "./GamingDashboard.vue";
-import StatusPanel from "./StatusPanel.vue";
-import TechnicalDetails from "./TechnicalDetails.vue";
-import UserHeader from "./UserHeader.vue";
+import { computed } from "vue";
+import type { FetchedProfile, SteamUser } from "../types";
+import StatusBar from "./StatusBar.vue";
+import TabbedDetails from "./TabbedDetails.vue";
+import UserIdentity from "./UserIdentity.vue";
 
-defineProps<{
+interface Props {
   user: SteamUser;
   profile?: FetchedProfile;
-}>();
+}
+
+const props = defineProps<Props>();
+
+// Calculate total playtime in hours
+const totalHours = computed(() => {
+  const totalMinutes = props.user.apps.reduce(
+    (sum, app) => sum + app.playtime_minutes,
+    0
+  );
+  return Math.round((totalMinutes / 60) * 10) / 10; // Round to 1 decimal
+});
+
+// Get most recent game
+const mostRecentGame = computed(() => {
+  if (!props.user.apps.length) return null;
+
+  return props.user.apps.reduce((recent, app) =>
+    app.last_played > recent.last_played ? app : recent
+  );
+});
 </script>
 
 <template>
-  <div
-    class="border border-secondary rounded-lg bg-sbg shadow-sm hover:shadow-xl transition-all hover:-translate-y-0.5 duration-300 overflow-hidden"
-  >
-    <!-- User Header Section -->
-    <UserHeader :user="user" :profile="profile" />
+  <div class="bg-bg-secondary border border-border rounded-lg p-4 space-y-3">
+    <!-- Core Identity Section -->
+    <UserIdentity :user="user" :profile="profile" />
 
-    <!-- Status Panel Section -->
-    <StatusPanel :user="user" :profile="profile" />
+    <!-- Quick Status & Stats -->
+    <StatusBar
+      :user="user"
+      :profile="profile"
+      :total-hours="totalHours"
+      :most-recent-game="mostRecentGame"
+    />
 
-    <!-- Gaming Dashboard Section -->
-    <GamingDashboard :user="user" :profile="profile" />
-
-    <!-- Technical Details Section -->
-    <div class="px-4 pb-3">
-      <TechnicalDetails :user="user" :profile="profile" />
-    </div>
+    <!-- Tabbed Details -->
+    <TabbedDetails :user="user" :profile="profile" />
   </div>
 </template>
