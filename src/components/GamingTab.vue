@@ -166,7 +166,7 @@ function formatLastPlayed(timestamp: number): string {
           class="text-sm font-medium text-text-secondary flex items-center gap-2 cursor-pointer hover:text-text transition-colors"
         >
           <span class="group-open:rotate-90 transition-transform">▶</span>
-          � Other Games ({{ otherGames.length }})
+          👀 Other Games ({{ otherGames.length }})
         </summary>
 
         <div class="mt-3 space-y-4">

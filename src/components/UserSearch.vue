@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import type { SteamUser } from "../types.ts";
+import CopyButton from "./CopyButton.vue";
 
 const props = defineProps<{
   users: SteamUser[];
@@ -28,6 +29,11 @@ const filteredUsers = computed(() => {
   });
 });
 
+// All Steam IDs for copying
+const allSteamIDs = computed(() => {
+  return props.users.map(user => user.steam_id).join(' ');
+});
+
 // Emit the filtered users to parent
 defineEmits<{
   (e: "update:filtered", users: SteamUser[]): void;
@@ -36,16 +42,27 @@ defineEmits<{
 
 <template>
   <div class="mb-4">
-    <input
-      v-model="searchQuery"
-      type="text"
-      placeholder="Search by nickname, Steam ID or name history"
-      class="text-text w-full px-4 py-3 rounded-md border-2 border-primary focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 hover:bg-sbg/20 hover:border-secondary"
-    />
+    <!-- Search Input with Copy Button -->
+    <div class="flex gap-2">
+      <input
+        v-model="searchQuery"
+        type="text"
+        placeholder="Search by nickname, Steam ID or name history"
+        class="text-text flex-1 px-4 py-3 rounded-md border-2 border-primary focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 hover:bg-sbg/20 hover:border-secondary"
+      />
+      
+      <CopyButton 
+        :value="allSteamIDs" 
+        label="Copy All IDs"
+        size="md"
+        class="px-4 py-3 bg-primary hover:bg-primary-hover text-white rounded-md"
+      />
+    </div>
 
+    <!-- Steam IDs Display -->
     <div class="mt-2 mb-4 flex justify-center align-center">
       <code class="text-text text-xl">{{
-        users.map((user) => user.steam_id).join(" ")
+        filteredUsers.map((user) => user.steam_id).join(" ")
       }}</code>
     </div>
 

@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import type { FetchedProfile, SteamUser } from "../types";
 import StatusBar from "./StatusBar.vue";
-import TabbedDetails from "./TabbedDetails.vue";
+import DetailsModal from "./DetailsModal.vue";
 import UserIdentity from "./UserIdentity.vue";
 
 interface Props {
@@ -44,7 +44,7 @@ const mostRecentGame = computed(() => {
       :most-recent-game="mostRecentGame"
     />
 
-    <!-- Tabbed Details -->
-    <TabbedDetails :user="user" :profile="profile" />
+    <!-- Details Modal -->
+    <DetailsModal :user="user" :profile="profile" />
   </div>
 </template>
