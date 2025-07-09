@@ -93,7 +93,7 @@ const steamProfileUrl = computed(() => {
           </span>
           <a
             :href="steamProfileUrl"
-            class="ml-2 text-primary/50 underline underline-offset-2 hover:text-primary-hover transition-colors text-base"
+            class="ml-2 text-primary/75 underline underline-offset-2 hover:text-primary-hover transition-colors text-base"
             target="_blank"
             rel="noopener noreferrer"
             title="Open Steam profile in browser"

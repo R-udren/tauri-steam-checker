@@ -54,6 +54,11 @@ const allSteamIDs = computed(() => {
   return props.users.map((user) => user.steam_id).join(" ");
 });
 
+// Helper to get plain string for CopyButton
+function getAllSteamIDs() {
+  return allSteamIDs.value;
+}
+
 // Emit the filtered users to parent
 defineEmits<{
   (e: "update:filtered", users: SteamUser[]): void;
@@ -72,7 +77,7 @@ defineEmits<{
       />
 
       <CopyButton
-        :value="allSteamIDs"
+        :value="getAllSteamIDs()"
         label="Copy All IDs"
         size="md"
         class="px-4 py-3 bg-primary hover:bg-primary-hover text-white rounded-md"
