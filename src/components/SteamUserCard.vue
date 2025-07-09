@@ -38,6 +38,10 @@ function getTimeAgo(timestamp: number) {
   if (interval > 1) return `${interval} minutes ago`;
   return `${seconds} seconds ago`;
 }
+
+function getNicknameHistory(name_history: Array<string>) {
+  return `(${name_history.join(", ")})`;
+}
 </script>
 
 <template>
@@ -65,9 +69,12 @@ function getTimeAgo(timestamp: number) {
     <div class="flex-1">
       <h3 class="text-2xl font-semibold mb-1 text-text">
         {{ user.nickname || profile?.steamID || user.steam_id }}
-        <span class="text-sub text-md"
-          >({{ user.name_history.join(", ") }})</span
+        <span
+          v-if="user?.name_history && user.name_history.length > 0"
+          class="text-sm text-sub font-normal"
         >
+          {{ getNicknameHistory(user.name_history) }}
+        </span>
       </h3>
 
       <div class="text-md mb-1 mt-1">
