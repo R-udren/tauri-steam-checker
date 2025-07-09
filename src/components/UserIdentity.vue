@@ -16,16 +16,7 @@ const displayName = computed(() => {
   return props.profile?.steamID || props.user.nickname || props.user.steam_id;
 });
 
-// Show first 3 previous names, with expand option
-const visibleNames = computed(() => {
-  if (!props.user.name_history?.length) return [];
-  return props.user.name_history.slice(0, 3);
-});
-
-const hasMoreNames = computed(() => {
-  return props.user.name_history?.length > 3;
-});
-
+// Show all previous names
 const allNames = computed(() => {
   return props.user.name_history || [];
 });
@@ -90,34 +81,16 @@ const statusLabel = computed(() => {
       <!-- Previous Names Row -->
       <div v-if="allNames.length > 0" class="flex items-center flex-wrap gap-1">
         <span class="text-xs text-text-muted">Previously:</span>
-        <template v-for="(name, index) in visibleNames" :key="name">
+        <template v-for="(name, index) in allNames" :key="name">
           <span
             class="text-xs text-text-secondary bg-bg-tertiary px-2 py-0.5 rounded"
           >
             {{ name }}
           </span>
-          <span v-if="index < visibleNames.length - 1" class="text-text-muted"
+          <span v-if="index < allNames.length - 1" class="text-text-muted"
             >•</span
           >
         </template>
-
-        <!-- Expandable names -->
-        <details v-if="hasMoreNames" class="inline">
-          <summary
-            class="text-xs text-primary cursor-pointer hover:text-primary-hover"
-          >
-            +{{ allNames.length - 3 }} more
-          </summary>
-          <div class="mt-1 flex flex-wrap gap-1">
-            <span
-              v-for="name in allNames.slice(3)"
-              :key="name"
-              class="text-xs text-text-secondary bg-bg-tertiary px-2 py-0.5 rounded"
-            >
-              {{ name }}
-            </span>
-          </div>
-        </details>
       </div>
     </div>
   </div>

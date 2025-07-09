@@ -34,3 +34,30 @@
   --color-away: #d2d160;
   --color-busy: #cd5c5c;
 }
+
+/* Fancy small scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: var(--color-bg-tertiary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-light);
+  border-radius: 8px;
+  border: 2px solid var(--color-bg-tertiary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--color-bg-tertiary);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-light) var(--color-bg-tertiary);
+}

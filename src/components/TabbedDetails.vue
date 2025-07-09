@@ -23,43 +23,62 @@ const tabs = [
 
 <template>
   <div class="space-y-3">
-    <!-- Tab Navigation -->
-    <div class="flex border-b border-border">
-      <button
-        v-for="tab in tabs"
-        :key="tab.id"
-        @click="activeTab = tab.id"
-        :class="[
-          'flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors relative',
-          activeTab === tab.id
-            ? 'text-primary border-b-2 border-primary bg-bg-tertiary/50'
-            : 'text-text-muted hover:text-text-secondary hover:bg-bg-tertiary/30',
-        ]"
+    <!-- Expandable Details Section -->
+    <details class="group">
+      <summary
+        class="flex items-center justify-between p-3 bg-bg-tertiary/50 border border-border rounded-lg cursor-pointer hover:bg-bg-tertiary transition-colors"
       >
-        <span>{{ tab.icon }}</span>
-        <span>{{ tab.label }}</span>
-      </button>
-    </div>
+        <div class="flex items-center gap-2">
+          <span class="group-open:rotate-90 transition-transform text-text-muted">▶</span>
+          <span class="text-sm font-medium text-text-secondary">Detailed Information</span>
+        </div>
+        <div class="flex items-center gap-1 text-xs text-text-muted">
+          <span v-for="tab in tabs" :key="tab.id" class="flex items-center gap-1">
+            {{ tab.icon }}
+          </span>
+        </div>
+      </summary>
 
-    <!-- Tab Content -->
-    <div class="min-h-[200px]">
-      <GamingTab
-        v-if="activeTab === 'gaming'"
-        :user="user"
-        :profile="profile"
-      />
+      <div class="mt-3 space-y-3">
+        <!-- Tab Navigation -->
+        <div class="flex border-b border-border">
+          <button
+            v-for="tab in tabs"
+            :key="tab.id"
+            @click="activeTab = tab.id"
+            :class="[
+              'flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors relative',
+              activeTab === tab.id
+                ? 'text-primary border-b-2 border-primary bg-bg-tertiary/50'
+                : 'text-text-muted hover:text-text-secondary hover:bg-bg-tertiary/30',
+            ]"
+          >
+            <span>{{ tab.icon }}</span>
+            <span>{{ tab.label }}</span>
+          </button>
+        </div>
 
-      <TechnicalTab
-        v-if="activeTab === 'technical'"
-        :user="user"
-        :profile="profile"
-      />
+        <!-- Tab Content -->
+        <div class="min-h-[200px]">
+          <GamingTab
+            v-if="activeTab === 'gaming'"
+            :user="user"
+            :profile="profile"
+          />
 
-      <ProfileTab
-        v-if="activeTab === 'profile'"
-        :user="user"
-        :profile="profile"
-      />
-    </div>
+          <TechnicalTab
+            v-if="activeTab === 'technical'"
+            :user="user"
+            :profile="profile"
+          />
+
+          <ProfileTab
+            v-if="activeTab === 'profile'"
+            :user="user"
+            :profile="profile"
+          />
+        </div>
+      </div>
+    </details>
   </div>
 </template>

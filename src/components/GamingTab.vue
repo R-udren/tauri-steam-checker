@@ -9,16 +9,35 @@ interface Props {
 
 const props = defineProps<Props>();
 
-// Top played games (by playtime)
-const topGames = computed(() => {
-  return [...props.user.apps]
-    .sort((a, b) => b.playtime_minutes - a.playtime_minutes)
-    .slice(0, 6);
+// Specific games to highlight
+const PRIORITY_GAMES = {
+  252490: "Rust",
+  480: "Spacewar", 
+  730: "CS2"
+};
+
+// Priority games (Rust, Spacewar, CS2)
+const priorityGames = computed(() => {
+  return props.user.apps
+    .filter(app => app.app_id in PRIORITY_GAMES)
+    .sort((a, b) => b.playtime_minutes - a.playtime_minutes);
 });
 
-// Recently played games
-const recentGames = computed(() => {
-  return [...props.user.apps]
+// Other games (excluding priority games)
+const otherGames = computed(() => {
+  return props.user.apps
+    .filter(app => !(app.app_id in PRIORITY_GAMES))
+    .sort((a, b) => b.playtime_minutes - a.playtime_minutes);
+});
+
+// Top other games (for expandable section)
+const topOtherGames = computed(() => {
+  return otherGames.value.slice(0, 10);
+});
+
+// Recently played games (excluding priority games, for expandable)
+const recentOtherGames = computed(() => {
+  return otherGames.value
     .filter((app) => app.last_played > 0)
     .sort((a, b) => b.last_played - a.last_played)
     .slice(0, 6);
@@ -40,6 +59,10 @@ const stats = computed(() => {
     avgHoursPerGame: Math.round(avgHoursPerGame * 10) / 10,
   };
 });
+
+function getGameName(appId: number): string {
+  return PRIORITY_GAMES[appId as keyof typeof PRIORITY_GAMES] || `App ${appId}`;
+}
 
 function formatHours(minutes: number): string {
   const hours = Math.round((minutes / 60) * 10) / 10;
@@ -98,84 +121,130 @@ function formatLastPlayed(timestamp: number): string {
       </div>
     </div>
 
-    <!-- Most Played Games -->
-    <div v-if="topGames.length > 0" class="space-y-3">
+    <!-- Priority Games (Rust, Spacewar, CS2) -->
+    <div v-if="priorityGames.length > 0" class="space-y-3">
       <h3
         class="text-sm font-medium text-text-secondary flex items-center gap-2"
       >
-        🏆 Most Played Games
+        ⭐ Featured Games
       </h3>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div
-          v-for="game in topGames"
+          v-for="game in priorityGames"
           :key="game.app_id"
-          class="flex items-center justify-between p-3 bg-bg-tertiary rounded-lg border border-border"
+          class="flex items-center justify-between p-3 bg-primary/10 border border-primary/30 rounded-lg"
         >
           <div class="flex items-center gap-3">
             <div
-              class="w-10 h-10 bg-bg-secondary rounded border border-border flex items-center justify-center"
+              class="w-10 h-10 bg-primary/20 rounded border border-primary/40 flex items-center justify-center"
             >
-              <span class="text-xs text-text-muted">{{
-                game.app_id.toString().slice(-2)
+              <span class="text-xs font-bold text-primary">{{
+                getGameName(game.app_id).slice(0, 2).toUpperCase()
               }}</span>
             </div>
             <div>
               <div class="text-sm font-medium text-text">
-                App {{ game.app_id }}
+                {{ getGameName(game.app_id) }}
               </div>
               <div class="text-xs text-text-muted">
                 {{ formatLastPlayed(game.last_played) }}
               </div>
             </div>
           </div>
-          <div class="text-sm font-mono text-text-secondary">
+          <div class="text-sm font-mono text-primary font-medium">
             {{ formatHours(game.playtime_minutes) }}
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Recently Played Games -->
-    <div v-if="recentGames.length > 0" class="space-y-3">
-      <h3
-        class="text-sm font-medium text-text-secondary flex items-center gap-2"
-      >
-        🕒 Recently Played
-      </h3>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div
-          v-for="game in recentGames"
-          :key="game.app_id"
-          class="flex items-center justify-between p-3 bg-bg-tertiary rounded-lg border border-border"
+    <!-- Other Games (Expandable) -->
+    <div v-if="otherGames.length > 0" class="space-y-3">
+      <details class="group">
+        <summary
+          class="text-sm font-medium text-text-secondary flex items-center gap-2 cursor-pointer hover:text-text transition-colors"
         >
-          <div class="flex items-center gap-3">
-            <div
-              class="w-10 h-10 bg-bg-secondary rounded border border-border flex items-center justify-center"
-            >
-              <span class="text-xs text-text-muted">{{
-                game.app_id.toString().slice(-2)
-              }}</span>
-            </div>
-            <div>
-              <div class="text-sm font-medium text-text">
-                App {{ game.app_id }}
-              </div>
-              <div class="text-xs text-text-muted">
-                {{ formatHours(game.playtime_minutes) }}
+          <span class="group-open:rotate-90 transition-transform">▶</span>
+          � Other Games ({{ otherGames.length }})
+        </summary>
+
+        <div class="mt-3 space-y-4">
+          <!-- Top Other Games -->
+          <div v-if="topOtherGames.length > 0">
+            <h4 class="text-xs font-medium text-text-muted mb-2 uppercase tracking-wide">
+              Most Played
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div
+                v-for="game in topOtherGames"
+                :key="game.app_id"
+                class="flex items-center justify-between p-2 bg-bg-tertiary rounded border border-border"
+              >
+                <div class="flex items-center gap-2">
+                  <div
+                    class="w-8 h-8 bg-bg-secondary rounded border border-border flex items-center justify-center"
+                  >
+                    <span class="text-xs text-text-muted">{{
+                      game.app_id.toString().slice(-2)
+                    }}</span>
+                  </div>
+                  <div>
+                    <div class="text-xs font-medium text-text">
+                      App {{ game.app_id }}
+                    </div>
+                    <div class="text-xs text-text-muted">
+                      {{ formatLastPlayed(game.last_played) }}
+                    </div>
+                  </div>
+                </div>
+                <div class="text-xs font-mono text-text-secondary">
+                  {{ formatHours(game.playtime_minutes) }}
+                </div>
               </div>
             </div>
           </div>
-          <div class="text-xs text-text-secondary">
-            {{ formatLastPlayed(game.last_played) }}
+
+          <!-- Recent Other Games -->
+          <div v-if="recentOtherGames.length > 0">
+            <h4 class="text-xs font-medium text-text-muted mb-2 uppercase tracking-wide">
+              Recently Played
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div
+                v-for="game in recentOtherGames"
+                :key="game.app_id"
+                class="flex items-center justify-between p-2 bg-bg-tertiary rounded border border-border"
+              >
+                <div class="flex items-center gap-2">
+                  <div
+                    class="w-8 h-8 bg-bg-secondary rounded border border-border flex items-center justify-center"
+                  >
+                    <span class="text-xs text-text-muted">{{
+                      game.app_id.toString().slice(-2)
+                    }}</span>
+                  </div>
+                  <div>
+                    <div class="text-xs font-medium text-text">
+                      App {{ game.app_id }}
+                    </div>
+                    <div class="text-xs text-text-muted">
+                      {{ formatHours(game.playtime_minutes) }}
+                    </div>
+                  </div>
+                </div>
+                <div class="text-xs text-text-secondary">
+                  {{ formatLastPlayed(game.last_played) }}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </details>
     </div>
 
     <!-- Empty State -->
-    <div v-if="topGames.length === 0" class="text-center py-8">
+    <div v-if="priorityGames.length === 0 && otherGames.length === 0" class="text-center py-8">
       <div class="text-4xl mb-2">🎮</div>
       <div class="text-text-muted">No game data available</div>
     </div>
