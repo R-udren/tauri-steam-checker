@@ -13,7 +13,10 @@ const props = defineProps<Props>();
 
 // Display name priority: profile nickname > user nickname > steam ID
 const displayName = computed(() => {
-  return props.profile?.steamID || props.user.nickname || props.user.steam_id;
+  const profileName = props.profile?.steamID;
+  const userNickname = props.user.nickname;
+  const steamId = props.user.steam_id;
+  return { profileName, userNickname, steamId };
 });
 
 // Show all previous names
@@ -59,7 +62,12 @@ const statusLabel = computed(() => {
       <!-- Name Row -->
       <div class="flex items-center justify-between">
         <h2 class="text-2xl font-semibold text-text truncate">
-          {{ displayName }}
+          <span v-if="displayName.profileName" class="mr-1">
+            {{ displayName.profileName }}
+          </span>
+          <span v-if="displayName.userNickname" class="text-text-secondary">
+            ({{ displayName.userNickname }})
+          </span>
         </h2>
         <div class="flex items-center gap-2 flex-shrink-0">
           <StatusBadge :type="onlineStatus" :status="statusLabel" />
