@@ -43,7 +43,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="mx-auto px-4 py-6 sm:px-6 lg:px-8 min-h-screen bg-bg">
+  <div
+    class="mx-auto px-4 py-6 sm:px-6 lg:px-8 min-h-screen bg-gradient-to-b from-bg to-bg-secondary"
+  >
     <header class="mb-8 text-center">
       <h1
         class="p-2 text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent"
