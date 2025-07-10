@@ -40,13 +40,27 @@ fn fetch_steam_profile(steam_id: String) -> Result<FetchedProfile, String> {
     }
 }
 
+#[tauri::command]
+fn get_hwid_hash() -> Result<String, String> {
+    use machineid_rs::{Encryption, HWIDComponent, IdBuilder};
+
+    let mut builder = IdBuilder::new(Encryption::MD5);
+    builder.add_component(HWIDComponent::CPUID);
+    builder.add_component(HWIDComponent::CPUCores);
+    let hwid = builder
+        .build("totalylegit")
+        .map_err(|e| format!("Failed to generate HWID: {}", e))?;
+    Ok(hwid)
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             get_steam_users_list,
-            fetch_steam_profile
+            fetch_steam_profile,
+            get_hwid_hash
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
