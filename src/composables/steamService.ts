@@ -22,7 +22,7 @@ export function useSteamUsers() {
 
       // Fetch profiles for each user in parallel and add as they arrive
       for (const user of steamUsers.value) {
-        fetchSteamProfile(user.steam_id); // don't await, let them resolve independently
+        fetchSteamProfile(user.steam_id); // don't await to let them resolve independently
       }
     } catch (error) {
       console.error("Error fetching Steam users:", error);

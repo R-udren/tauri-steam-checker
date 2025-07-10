@@ -69,16 +69,13 @@ const memberSince = computed(() => {
         <span class="text-text-secondary font-medium">{{ memberSince }}</span>
       </div>
 
-      <!-- Data freshness indicator -->
-      <div class="flex items-center gap-1">
+      <!-- Active user indicator -->
+      <div class="flex items-center gap-1" v-if="user.most_recent">
         <div
-          :class="[
-            'w-2 h-2 rounded-full',
-            user.most_recent ? 'bg-success' : 'bg-warning',
-          ]"
+          :class="['w-2 h-2 rounded-full', user.most_recent ?? 'bg-success']"
         ></div>
         <span class="text-xs text-text-muted">
-          {{ user.most_recent ? "Fresh" : "Cached" }}
+          {{ user.most_recent ?? "Latest" }}
         </span>
       </div>
     </div>

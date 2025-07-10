@@ -50,8 +50,8 @@ const dataInfo = computed(() => {
   }
 
   info.push({
-    label: "Data Freshness",
-    value: props.user.most_recent ? "Most Recent" : "Cached",
+    label: "Active",
+    value: props.user.most_recent ? "Most Recent" : "Not active",
   });
 
   return info;
