@@ -30,7 +30,7 @@ const profileInfo = computed(() => {
   if (props.profile?.memberSince) {
     info.push({
       label: "Member Since",
-      value: new Date(props.profile.memberSince).toLocaleDateString(),
+      value: new Date(props.profile.memberSince).toDateString(),
     });
   }
 

@@ -24,7 +24,7 @@ const lastActive = computed(() => {
   if (diffHours < 1) return "Less than 1 hour ago";
   if (diffHours < 24) return `${diffHours} hours ago`;
   if (diffDays < 7) return `${diffDays} days ago`;
-  return date.toLocaleDateString();
+  return date.toDateString();
 });
 
 // Game count
