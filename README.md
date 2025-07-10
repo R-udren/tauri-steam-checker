@@ -1,16 +1,51 @@
-# Tauri + Vue + TypeScript
+# Tauri Steam Account Checker
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+A modern desktop app for scanning, viewing, and analyzing Steam user accounts. Built with **Tauri**, **Vue 3**, **TypeScript**, and **TailwindCSS** for a fast, beautiful, and privacy-friendly experience.
 
-## Recommended IDE Setup
+## Features
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+- 🔍 **Search** Steam users by nickname, SteamID, name history, or profile info
+- 🖼️ **Real Steam game banners** and avatars
+- 🧑‍💻 **Compact, scannable UI** with dark theme and high contrast
+- 🏆 **Game stats**: hours, most played, recently played, and more
+- 📝 **Profile & technical details**: previous names, account status, privacy, VAC/trade bans
+- 📋 **Copy** any SteamID or all IDs at once
+- 🌐 **Open Steam profiles** in your browser
+- ⚡ **Fast**: All data is processed locally, no external servers
 
-## Type Support For `.vue` Imports in TS
+## Getting Started
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's Take Over mode by following these steps:
+### Prerequisites
 
-1. Run `Extensions: Show Built-in Extensions` from VS Code's command palette, look for `TypeScript and JavaScript Language Features`, then right click and select `Disable (Workspace)`. By default, Take Over mode will enable itself if the default TypeScript extension is disabled.
-2. Reload the VS Code window by running `Developer: Reload Window` from the command palette.
+- [Rust](https://www.rust-lang.org/tools/install)
+- [Node.js](https://nodejs.org/)
+- [deno](https://deno.land/) or [npm](https://www.npmjs.com/)
 
-You can learn more about Take Over mode [here](https://github.com/johnsoncodehk/volar/discussions/471).
+### Setup
+
+```sh
+deno install # or npm install
+deno task tauri dev # or npm run tauri dev
+```
+
+### Usage
+
+- Enter or load Steam user data (see app for details)
+- Search, filter, and scan accounts
+- Click any user for details, copy IDs, or open their Steam profile
+
+## Tech Stack
+
+- [Tauri](https://tauri.app/) — secure, lightweight desktop runtime
+- [Vue 3](https://vuejs.org/) + [TypeScript](https://www.typescriptlang.org/)
+- [TailwindCSS](https://tailwindcss.com/) — custom dark theme
+- [Vite](https://vitejs.dev/) — lightning-fast dev/build
+
+## Development
+
+- Recommended: [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) + [Tauri extension](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+- All `.vue` files use `<script setup>` and full TypeScript support
+
+## License
+
+This project is **closed source** and not available for public distribution or modification.

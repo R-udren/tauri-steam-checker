@@ -51,9 +51,9 @@ const avatarBorderClass = computed(() => {
 });
 
 function openSteamProfile() {
-  if (props.profile?.steamID64) {
+  if (props.user.steam_id) {
     window.open(
-      `https://steamcommunity.com/profiles/${props.profile.steamID64}`,
+      `https://steamcommunity.com/profiles/${props.user.steam_id}`,
       "_blank"
     );
   }
