@@ -12,7 +12,7 @@ lazy_static! {
         Mutex::new(std::collections::HashMap::new());
 }
 
-#[tauri::command]
+#[tauri::command(async)]
 fn get_steam_users_list() -> Result<Vec<SteamUser>, String> {
     let mut steam_users_cache = STEAM_USERS_CACHE.lock().unwrap();
     if steam_users_cache.is_empty() {
@@ -24,15 +24,20 @@ fn get_steam_users_list() -> Result<Vec<SteamUser>, String> {
     Ok(steam_users_cache.clone())
 }
 
-#[tauri::command]
-fn fetch_steam_profile(steam_id: String) -> Result<FetchedProfile, String> {
-    let mut cache = PROFILE_CACHE.lock().unwrap();
-    if let Some(profile) = cache.get(&steam_id) {
-        return Ok(profile.clone());
+#[tauri::command(async)]
+async fn fetch_steam_profile(steam_id: String) -> Result<FetchedProfile, String> {
+    // Check cache first
+    {
+        let cache = PROFILE_CACHE.lock().unwrap();
+        if let Some(profile) = cache.get(&steam_id) {
+            return Ok(profile.clone());
+        }
     }
-    let fetched = fetch_profile(&steam_id);
+    // Release lock before await
+    let fetched = fetch_profile(&steam_id).await;
     match fetched {
         Ok(profile) => {
+            let mut cache = PROFILE_CACHE.lock().unwrap();
             cache.insert(steam_id.to_string(), profile.clone());
             Ok(profile)
         }
