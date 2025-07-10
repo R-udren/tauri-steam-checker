@@ -20,15 +20,9 @@ export function useSteamUsers() {
         (user: SteamUser) => user.steam_id
       );
 
-      // Fetch profiles for each user
+      // Fetch profiles for each user in parallel and add as they arrive
       for (const user of steamUsers.value) {
-        try {
-          await fetchSteamProfile(user.steam_id);
-        } catch (error) {
-          console.error("Error fetching Steam profile:", error);
-          errorMessage.value =
-            "Failed to fetch Steam profile. Details: " + error;
-        }
+        fetchSteamProfile(user.steam_id); // don't await, let them resolve independently
       }
     } catch (error) {
       console.error("Error fetching Steam users:", error);
