@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { invoke } from "@tauri-apps/api/core";
 import { computed, onMounted, ref, watch } from "vue";
 import ErrorMessage from "./components/ErrorMessage.vue";
 import LoadingSpinner from "./components/LoadingSpinner.vue";
@@ -24,17 +23,6 @@ watch(serviceError, (newError) => {
 const clearErrorMessage = () => {
   errorMessage.value = null;
 };
-
-const getHwid = async () => {
-  try {
-    const response = await invoke("get_hwid_hash");
-    console.log("HWID:", response);
-  } catch (error) {
-    console.error("Error fetching HWID:", error);
-  }
-};
-
-getHwid();
 
 const getProfileForUser = (steamId: string) => {
   return fetchedProfiles.value.find((profile) => profile.steamID64 === steamId);

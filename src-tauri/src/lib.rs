@@ -1,10 +1,9 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 use steamid_find::{FetchedProfile, SteamUser};
 
-mod database;
 mod gathering;
 
-use gathering::{gather_hwid_hash, gather_steam_users, web_fetch_steam_profile};
+pub use gathering::{gather_hwid_hash, gather_steam_users, web_fetch_steam_profile};
 
 // Tauri command wrappers
 #[tauri::command(async)]
