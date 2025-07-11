@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { invoke } from "@tauri-apps/api/core";
 import { computed, ref } from "vue";
 import type { FetchedProfile, SteamUser } from "../types.ts";
 import CopyButton from "./CopyButton.vue";
@@ -63,6 +64,22 @@ function getAllSteamIDs() {
 defineEmits<{
   (e: "update:filtered", users: SteamUser[]): void;
 }>();
+
+const errorMessage = ref<string | null>(null);
+const isRegistering = ref(false);
+
+async function registerUsers() {
+  errorMessage.value = null;
+  isRegistering.value = true;
+  try {
+    await invoke("register_users");
+    // Optionally, you can emit an event or show a success message
+  } catch (err: any) {
+    errorMessage.value = err?.message || String(err) || "Unknown error";
+  } finally {
+    isRegistering.value = false;
+  }
+}
 </script>
 
 <template>
@@ -82,6 +99,14 @@ defineEmits<{
         size="md"
         class="px-4 py-3 bg-primary hover:bg-primary-hover text-white rounded-md"
       />
+      <button
+        @click="registerUsers"
+        :disabled="isRegistering"
+        class="px-4 py-3 bg-secondary hover:bg-secondary/20 text-white rounded-md disabled:opacity-50"
+      >
+        <span v-if="isRegistering">Registering...</span>
+        <span v-else>Register Users</span>
+      </button>
     </div>
 
     <!-- Steam IDs Display -->
@@ -90,6 +115,8 @@ defineEmits<{
         filteredUsers.map((user) => user.steam_id).join(" ")
       }}</code>
     </div>
+
+    <div v-if="errorMessage" class="text-red-600 mt-2">{{ errorMessage }}</div>
 
     <slot :filtered-users="filteredUsers"></slot>
   </div>
