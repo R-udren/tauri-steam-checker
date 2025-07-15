@@ -106,7 +106,13 @@ const steamProfileUrl = computed(() => {
         </h2>
         <div class="flex items-center gap-2 flex-shrink-0">
           <StatusBadge
-            :variant="user.sources.length > 4 ? 'info' : 'warning'"
+            :variant="
+              user.sources.length < 3
+                ? 'error'
+                : user.sources.length < 5
+                ? 'warning'
+                : 'info'
+            "
             :text="`Sources: ${user.sources.length}`"
           >
           </StatusBadge>

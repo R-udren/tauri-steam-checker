@@ -99,14 +99,14 @@ async function registerUsers() {
         size="md"
         class="px-4 py-3 bg-primary hover:bg-primary-hover text-white rounded-md"
       />
-      <button
+      <!-- <button
         @click="registerUsers"
         :disabled="isRegistering"
         class="px-4 py-3 bg-secondary hover:bg-secondary/20 text-white rounded-md disabled:opacity-50"
       >
         <span v-if="isRegistering">Registering...</span>
         <span v-else>Register Users</span>
-      </button>
+      </button> -->
     </div>
 
     <!-- Steam IDs Display -->

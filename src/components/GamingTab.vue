@@ -13,7 +13,7 @@ const props = defineProps<Props>();
 const PRIORITY_GAMES = {
   252490: "Rust",
   480: "Spacewar",
-  730: "CS2",
+  730: "Counter Strike: 2",
 };
 
 // Priority games (Rust, Spacewar, CS2)
