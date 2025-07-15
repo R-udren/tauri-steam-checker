@@ -34,7 +34,15 @@ const mostRecentGame = computed(() => {
 </script>
 
 <template>
-  <div class="bg-bg-secondary border border-border rounded-lg p-4 space-y-3">
+  <div
+    :class="[
+      'rounded-lg p-4 space-y-3',
+      user.sources.length < 3
+        ? 'bg-warning/10 border-warning'
+        : 'bg-bg-secondary border-border',
+      'border',
+    ]"
+  >
     <!-- Core Identity Section -->
     <UserIdentity :user="user" :profile="profile" />
 

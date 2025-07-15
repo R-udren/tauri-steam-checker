@@ -16,8 +16,7 @@ pub fn gather_steam_users() -> Result<Vec<SteamUser>, String> {
     let mut steam_users_cache = STEAM_USERS_CACHE.lock().unwrap();
     if steam_users_cache.is_empty() {
         let steam_users = get_steam_users().map_err(|e| format!("Failed fetching users: {}", e))?;
-        let mut steam_users_vec = steam_users.to_vec();
-        steam_users_vec.sort_by(|a, b| b.time_stamp.cmp(&a.time_stamp));
+        let steam_users_vec = steam_users.to_sorted_vec();
         *steam_users_cache = steam_users_vec;
     }
     Ok(steam_users_cache.clone())

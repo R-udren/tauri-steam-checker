@@ -86,6 +86,8 @@ function formatLastPlayed(timestamp: number | undefined): string {
 }
 
 function getGameHeaderUrl(appId: number): string {
+  if (!appId || appId === 480) return "";
+
   return `https://cdn.cloudflare.steamstatic.com/steam/apps/${appId}/header.jpg`;
 }
 
