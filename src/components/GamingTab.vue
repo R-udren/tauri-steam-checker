@@ -38,8 +38,8 @@ const topOtherGames = computed(() => {
 // Recently played games (excluding priority games, for expandable)
 const recentOtherGames = computed(() => {
   return otherGames.value
-    .filter((app) => app.last_played > 0)
-    .sort((a, b) => b.last_played - a.last_played)
+    .filter((app) => (app.last_played ?? 0) > 0)
+    .sort((a, b) => b.last_played ?? 0 - (a.last_played ?? 0))
     .slice(0, 6);
 });
 
@@ -69,8 +69,8 @@ function formatHours(minutes: number): string {
   return `${hours}h`;
 }
 
-function formatLastPlayed(timestamp: number): string {
-  if (timestamp === 0) return "Never";
+function formatLastPlayed(timestamp: number | undefined): string {
+  if (timestamp === 0 || timestamp === undefined) return "Never";
 
   const date = new Date(timestamp * 1000);
   const now = new Date();

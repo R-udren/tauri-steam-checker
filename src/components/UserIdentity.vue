@@ -25,13 +25,13 @@ const allNames = computed(() => {
 });
 
 // Online status
-const onlineStatus = computed(() => {
-  if (!props.profile?.onlineState) return "offline";
+const onlineStatusVariant = computed(() => {
+  if (!props.profile?.onlineState) return "default";
 
   const state = props.profile.onlineState.toLowerCase();
-  if (state.includes("online")) return "online";
-  if (state.includes("offline")) return "offline";
-  return "offline"; // Default to offline for unknown states
+  if (state.includes("online")) return "success";
+  if (state.includes("offline")) return "default";
+  return "default"; // Default to offline for unknown states
 });
 
 const statusLabel = computed(() => {
@@ -85,7 +85,10 @@ const steamProfileUrl = computed(() => {
             {{ displayName.profileName }}
           </span>
           <span
-            v-if="displayName.userNickname"
+            v-if="
+              displayName.userNickname &&
+              displayName.userNickname !== displayName.profileName
+            "
             class="text-text-secondary"
             title="Local nickname (from local data)"
           >
@@ -103,14 +106,19 @@ const steamProfileUrl = computed(() => {
         </h2>
         <div class="flex items-center gap-2 flex-shrink-0">
           <StatusBadge
-            :type="onlineStatus"
-            :status="statusLabel"
+            :variant="user.sources.length > 4 ? 'info' : 'warning'"
+            :text="`Sources: ${user.sources.length}`"
+          >
+          </StatusBadge>
+          <StatusBadge
+            :variant="onlineStatusVariant"
+            :text="statusLabel"
             title="Current online status"
           />
           <StatusBadge
             v-if="user.most_recent"
-            type="online"
-            status="Latest"
+            variant="success"
+            text="Latest"
             title="This is the most recent data"
           />
         </div>

@@ -2,16 +2,16 @@ export interface SteamUser {
   steam_id: string;
   nickname?: string;
   name_history: Array<string>;
-  most_recent: boolean;
+  most_recent: boolean; // Active user
   sources: Array<string>;
-  time_stamp?: number;
+  time_stamp?: number; // UTC Timestamp of latest use
   apps: Array<App>;
 }
 
 export interface App {
   app_id: number;
   playtime_minutes: number;
-  last_played: number;
+  last_played?: number; // UTC Timestamp of last launch
 }
 
 export interface MostPlayedGame {

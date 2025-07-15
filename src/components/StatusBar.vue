@@ -68,19 +68,6 @@ const memberSince = computed(() => {
         <span class="text-text-muted">Member since:</span>
         <span class="text-text-secondary font-medium">{{ memberSince }}</span>
       </div>
-
-      <!-- Active user indicator -->
-      <div class="flex items-center gap-1" v-if="user.most_recent">
-        <div
-          :class="[
-            'w-2 h-2 rounded-full',
-            user.most_recent ? 'bg-success' : '',
-          ]"
-        ></div>
-        <span class="text-xs text-text-muted">
-          {{ user.most_recent ? "Active" : "" }}
-        </span>
-      </div>
     </div>
   </div>
 </template>

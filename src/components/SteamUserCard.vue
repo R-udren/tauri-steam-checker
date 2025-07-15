@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import type { FetchedProfile, SteamUser } from "../types";
-import StatusBar from "./StatusBar.vue";
 import DetailsModal from "./DetailsModal.vue";
+import StatusBar from "./StatusBar.vue";
 import UserIdentity from "./UserIdentity.vue";
 
 interface Props {
@@ -15,7 +15,7 @@ const props = defineProps<Props>();
 // Calculate total playtime in hours
 const totalHours = computed(() => {
   const totalMinutes = props.user.apps.reduce(
-    (sum, app) => sum + app.playtime_minutes,
+    (sum, app) => sum + (app.playtime_minutes ?? 0),
     0
   );
   return Math.round((totalMinutes / 60) * 10) / 10; // Round to 1 decimal
@@ -25,8 +25,10 @@ const totalHours = computed(() => {
 const mostRecentGame = computed(() => {
   if (!props.user.apps.length) return null;
 
-  return props.user.apps.reduce((recent, app) =>
-    app.last_played > recent.last_played ? app : recent
+  return props.user.apps.reduce(
+    (recent, app) =>
+      (app.last_played ?? 0) > (recent.last_played ?? 0) ? app : recent,
+    props.user.apps[0]
   );
 });
 </script>

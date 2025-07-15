@@ -45,7 +45,7 @@ const buttonClasses = computed(() => {
   >
     <svg
       v-if="!copied"
-      class="w-3 h-3"
+      class="size-5"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -59,7 +59,7 @@ const buttonClasses = computed(() => {
     </svg>
     <svg
       v-else
-      class="w-3 h-3 text-green-400"
+      class="size-4 text-green-400"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
