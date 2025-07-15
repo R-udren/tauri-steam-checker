@@ -59,13 +59,16 @@ const steamProfileUrl = computed(() => {
     <!-- Avatar -->
     <div class="flex-shrink-0">
       <img
-        :src="profile?.avatarFull || '/default-avatar.png'"
+        :src="
+          profile?.avatarFull ||
+          'https://avatars.akamai.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg'
+        "
         :alt="`${
           displayName.profileName ||
           displayName.userNickname ||
           displayName.steamId
         } avatar`"
-        class="size-24 rounded-lg border border-border-light"
+        class="size-24 rounded border border-border-light"
         title="Steam profile avatar"
       />
     </div>

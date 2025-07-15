@@ -22,7 +22,7 @@ watch(
   <transition name="fade">
     <div
       v-if="message"
-      class="bg-red-50 text-red-700 border border-red-200 rounded-md p-3 flex items-center justify-between mb-4"
+      class="bg-red-500/20 text-red-50 border border-red-500 rounded-md p-3 flex items-center justify-between mb-4"
     >
       <div class="flex items-center">
         <span class="mr-2 text-red-600">⚠️</span>
