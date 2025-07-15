@@ -88,6 +88,13 @@ const steamProfileUrl = computed(() => {
             {{ displayName.profileName }}
           </span>
           <span
+            v-if="!displayName.userNickname && !displayName.profileName"
+            class="text-text-secondary text-lg"
+            title="Steam ID"
+          >
+            {{ displayName.steamId }}
+          </span>
+          <span
             v-if="
               displayName.userNickname &&
               displayName.userNickname !== displayName.profileName
