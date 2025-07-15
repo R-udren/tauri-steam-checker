@@ -30,8 +30,9 @@ const onlineStatusVariant = computed(() => {
 
   const state = props.profile.onlineState.toLowerCase();
   if (state.includes("online")) return "success";
-  if (state.includes("offline")) return "default";
-  return "default"; // Default to offline for unknown states
+  if (state.includes("away") || state.includes("busy")) return "warning";
+  if (state.includes("in-game")) return "info";
+  return "default";
 });
 
 const statusLabel = computed(() => {
