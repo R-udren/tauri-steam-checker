@@ -84,9 +84,7 @@ function formatLastPlayed(timestamp: number | undefined): string {
   const diffMinutes = Math.floor(diffMs / (1000 * 60));
 
   if (diffMinutes < 60) return `${diffMinutes} minutes ago`;
-  if (diffHours < 24) return `${diffHours} hours ago`;
-  if (diffDays === 0) return "Today";
-  if (diffDays === 1) return "Yesterday";
+  if (diffDays < 2) return `${diffHours} hours ago`;
   if (diffDays < 7) return `${diffDays} days ago`;
   if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
   if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
