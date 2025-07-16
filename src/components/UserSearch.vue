@@ -90,7 +90,7 @@ async function registerUsers() {
         v-model="searchQuery"
         type="text"
         placeholder="Search by nickname, Steam ID, name history, real name, location, or status..."
-        class="text-text flex-1 px-4 py-3 rounded-md border-2 border-primary focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 hover:bg-sbg/20 hover:border-secondary"
+        class="text-text flex-1 px-4 py-3 rounded-md border-2 border-primary focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 hover:bg-sbg/20 hover:border-primary-hover"
       />
 
       <CopyButton
