@@ -35,12 +35,37 @@ function closeModal() {
     <!-- Trigger Button -->
     <button
       @click="openModal"
-      class="w-full p-2 bg-bg-tertiary/50 border border-border rounded-lg hover:bg-bg-tertiary transition-colors text-left"
+      class="w-full p-3 bg-gradient-to-r from-primary/10 to-bg-tertiary/70 border border-primary/40 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 text-left group hover:bg-bg-secondary hover:border-primary hover:text-primary"
     >
       <div class="flex items-center justify-between">
-        <span class="text-sm font-medium text-text-secondary">View Details</span>
-        <div class="flex items-center gap-1 text-xs text-text-muted">
-          <span v-for="tab in tabs" :key="tab.id">{{ tab.icon }}</span>
+        <span
+          class="text-base font-semibold text-primary flex items-center gap-2"
+        >
+          <svg
+            class="w-5 h-5 text-primary animate-pulse"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <circle cx="12" cy="12" r="10" stroke-width="2" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8 12h8M12 8v8"
+            />
+          </svg>
+          View Details
+        </span>
+        <div class="flex items-center gap-2 text-lg">
+          <span
+            v-for="tab in tabs"
+            :key="tab.id"
+            class="transition-transform duration-200 group-hover:scale-125"
+            :title="tab.label"
+          >
+            {{ tab.icon }}
+          </span>
         </div>
       </div>
     </button>
@@ -48,7 +73,7 @@ function closeModal() {
     <!-- Modal Overlay -->
     <div
       v-if="isOpen"
-      class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
+      class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
       @click="closeModal"
     >
       <!-- Modal Content -->
@@ -57,7 +82,9 @@ function closeModal() {
         @click.stop
       >
         <!-- Modal Header -->
-        <div class="flex items-center justify-between p-4 border-b border-border">
+        <div
+          class="flex items-center justify-between p-4 border-b border-border"
+        >
           <h2 class="text-lg font-semibold text-text">
             {{ profile?.steamID || user.nickname || user.steam_id }} - Details
           </h2>
@@ -65,8 +92,18 @@ function closeModal() {
             @click="closeModal"
             class="text-text-muted hover:text-text transition-colors p-1"
           >
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
             </svg>
           </button>
         </div>
