@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import DOMPurify from "dompurify";
 import { computed } from "vue";
 import type { FetchedProfile, SteamUser } from "../types";
+import InfoRow from "./InfoRow.vue";
 
 interface Props {
   user: SteamUser;
@@ -9,173 +11,132 @@ interface Props {
 
 const props = defineProps<Props>();
 
-// Profile information
-const profileInfo = computed(() => {
-  const info = [];
+// --- Computed Properties for Data Transformation ---
 
-  if (props.profile?.realname) {
-    info.push({
-      label: "Real Name",
-      value: props.profile.realname,
-    });
-  }
+const realName = computed(() => props.profile?.realname);
+const location = computed(() => props.profile?.location);
+const memberSince = computed(() =>
+  props.profile?.memberSince
+    ? new Date(props.profile.memberSince).toDateString()
+    : undefined
+);
 
-  if (props.profile?.location) {
-    info.push({
-      label: "Location",
-      value: props.profile.location,
-    });
-  }
-
-  if (props.profile?.memberSince) {
-    info.push({
-      label: "Member Since",
-      value: new Date(props.profile.memberSince).toDateString(),
-    });
-  }
-
-  return info;
+const onlineState = computed(() => {
+  const state = props.profile?.onlineState;
+  if (!state) return { text: "Unknown", variant: "default" as const };
+  const lowerState = state.toLowerCase();
+  if (lowerState === "online" || lowerState === "in-game")
+    return { text: state, variant: "success" as const };
+  if (lowerState === "away" || lowerState === "snooze")
+    return { text: state, variant: "warning" as const };
+  return { text: state, variant: "default" as const };
 });
 
-// Profile status
-const profileStatus = computed(() => {
-  const status = [];
+const statusMessage = computed(() => props.profile?.stateMessage);
 
-  if (props.profile?.onlineState) {
-    status.push({
-      label: "Online State",
-      value: props.profile.onlineState,
-    });
-  }
-
-  if (props.profile?.stateMessage) {
-    status.push({
-      label: "Status Message",
-      value: props.profile.stateMessage,
-    });
-  }
-
-  return status;
+const sanitizedSummary = computed(() => {
+  if (!props.profile?.summary) return undefined;
+  // Sanitize the HTML to prevent XSS
+  return DOMPurify.sanitize(props.profile.summary);
 });
 
-// Name history with better formatting
 const nameHistory = computed(() => {
   if (!props.user.name_history?.length) return [];
-
   return props.user.name_history.map((name, index) => ({
     name,
     position: index + 1,
     isCurrent: index === 0,
   }));
 });
+
+const hasProfileData = computed(() => {
+  return (
+    realName.value ||
+    location.value ||
+    memberSince.value ||
+    sanitizedSummary.value ||
+    onlineState.value.text !== "Unknown" ||
+    statusMessage.value ||
+    nameHistory.value.length > 0
+  );
+});
 </script>
 
 <template>
-  <div class="space-y-6">
-    <!-- Profile Information -->
-    <div v-if="profileInfo.length > 0" class="space-y-3">
-      <h3
-        class="text-sm font-medium text-text-secondary flex items-center gap-2"
-      >
-        👤 Profile Information
+  <div v-if="hasProfileData" class="space-y-6">
+    <!-- Section: Profile Information -->
+    <section>
+      <h3 class="text-lg font-semibold text-text mb-3 flex items-center gap-2">
+        <span class="text-xl">👤</span> Profile Information
       </h3>
-
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div
-          v-for="info in profileInfo"
-          :key="info.label"
-          class="p-3 bg-bg-tertiary rounded-lg border border-border"
-        >
-          <div class="text-xs text-text-muted uppercase tracking-wide mb-1">
-            {{ info.label }}
-          </div>
-          <div class="text-sm text-text">{{ info.value }}</div>
-        </div>
+        <InfoRow v-if="realName" label="Real Name" :value="realName" />
+        <InfoRow v-if="location" label="Location" :value="location" />
+        <InfoRow v-if="memberSince" label="Member Since" :value="memberSince" />
       </div>
-    </div>
+    </section>
 
-    <!-- Profile Summary -->
-    <div v-if="profile?.summary" class="space-y-3">
-      <h3
-        class="text-sm font-medium text-text-secondary flex items-center gap-2"
-      >
-        📝 Profile Summary
+    <!-- Section: Profile Summary -->
+    <section v-if="sanitizedSummary">
+      <h3 class="text-lg font-semibold text-text mb-3 flex items-center gap-2">
+        <span class="text-xl">📝</span> Profile Summary
       </h3>
-
-      <div class="p-4 bg-bg-tertiary rounded-lg border border-border">
-        <p class="text-sm text-text leading-relaxed">{{ profile.summary }}</p>
+      <div
+        class="p-4 bg-bg-tertiary rounded-lg border border-border prose prose-sm max-w-none"
+      >
+        <div class="text-text leading-relaxed" v-html="sanitizedSummary"></div>
       </div>
-    </div>
+    </section>
 
-    <!-- Current Status -->
-    <div v-if="profileStatus.length > 0" class="space-y-3">
-      <h3
-        class="text-sm font-medium text-text-secondary flex items-center gap-2"
-      >
-        💬 Current Status
+    <!-- Section: Current Status -->
+    <section>
+      <h3 class="text-lg font-semibold text-text mb-3 flex items-center gap-2">
+        <span class="text-xl">💬</span> Current Status
       </h3>
-
       <div class="space-y-2">
-        <div
-          v-for="status in profileStatus"
-          :key="status.label"
-          class="p-3 bg-bg-tertiary rounded-lg border border-border"
-        >
-          <div class="text-xs text-text-muted uppercase tracking-wide mb-1">
-            {{ status.label }}
-          </div>
-          <div class="text-sm text-text">{{ status.value }}</div>
-        </div>
+        <InfoRow
+          label="Online State"
+          :value="onlineState.text"
+          :variant="onlineState.variant"
+        />
+        <InfoRow
+          v-if="statusMessage"
+          label="Status Message"
+          :value="statusMessage"
+        />
       </div>
-    </div>
+    </section>
 
-    <!-- Name History -->
-    <div v-if="nameHistory.length > 0" class="space-y-3">
-      <h3
-        class="text-sm font-medium text-text-secondary flex items-center gap-2"
-      >
-        📜 Name History
-        <span class="text-xs text-text-muted"
+    <!-- Section: Name History -->
+    <section v-if="nameHistory.length > 0">
+      <h3 class="text-lg font-semibold text-text mb-3 flex items-center gap-2">
+        <span class="text-xl">📜</span> Name History
+        <span class="text-sm text-text-muted"
           >({{ nameHistory.length }} names)</span
         >
       </h3>
-
-      <div class="space-y-2 max-h-60 overflow-y-auto">
+      <div class="space-y-2 max-h-72 overflow-y-auto">
         <div
-          v-for="(entry, index) in nameHistory"
-          :key="index"
-          :class="[
-            'flex items-center justify-between p-3 rounded-lg border',
-            entry.isCurrent
-              ? 'bg-primary/10 border-primary/30'
-              : 'bg-bg-tertiary border-border',
-          ]"
+          v-for="entry in nameHistory"
+          :key="entry.position"
+          class="flex items-center justify-between p-4 rounded-lg border bg-bg-tertiary border-border"
         >
           <div class="flex items-center gap-3">
-            <div class="text-xs text-text-muted font-mono w-6">
+            <div
+              class="text-xs text-text-muted font-mono w-8 text-center flex-shrink-0"
+            >
               #{{ entry.position }}
             </div>
-            <div class="text-sm text-text">{{ entry.name }}</div>
-          </div>
-          <div v-if="entry.isCurrent" class="text-xs text-primary font-medium">
-            Current
+            <div class="text-sm text-text font-medium">{{ entry.name }}</div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
+  </div>
 
-    <!-- Empty State -->
-    <div
-      v-if="
-        profileInfo.length === 0 &&
-        !profile?.summary &&
-        profileStatus.length === 0 &&
-        nameHistory.length === 0
-      "
-      class="text-center py-8"
-    >
-      <div class="text-4xl mb-2">👤</div>
-      <div class="text-text-muted">No profile data available</div>
-    </div>
+  <!-- Empty State -->
+  <div v-else class="text-center py-12 text-text-muted">
+    <p class="text-4xl mb-3">👤</p>
+    <p>No profile data available for this user.</p>
   </div>
 </template>
