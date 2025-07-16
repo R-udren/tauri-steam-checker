@@ -25,14 +25,6 @@
   --color-warning: #f59e0b;
   --color-error: #ef4444;
   --color-deactivated: #6b7280;
-
-  /* Steam-inspired colors */
-  --color-steam-blue: #1b2838;
-  --color-steam-light-blue: #2a475e;
-  --color-online: #57cbde;
-  --color-offline: #898989;
-  --color-away: #d2d160;
-  --color-busy: #cd5c5c;
 }
 
 /* Fancy small scrollbar styles */
