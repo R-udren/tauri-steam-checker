@@ -13,7 +13,7 @@ const props = defineProps<Props>();
 const PRIORITY_GAMES = {
   252490: "Rust",
   480: "Spacewar",
-  730: "Counter Strike: 2",
+  730: "Counter-Strike 2",
 };
 
 // Priority games (Rust, Spacewar, CS2)
@@ -23,11 +23,11 @@ const priorityGames = computed(() => {
     .sort((a, b) => b.playtime_minutes - a.playtime_minutes);
 });
 
-// Other games (excluding priority games)
+// Other games
 const otherGames = computed(() => {
-  return props.user.apps
-    .filter((app) => !(app.app_id in PRIORITY_GAMES))
-    .sort((a, b) => b.playtime_minutes - a.playtime_minutes);
+  return props.user.apps.sort(
+    (a, b) => b.playtime_minutes - a.playtime_minutes
+  );
 });
 
 // Top other games (for expandable section)
@@ -35,7 +35,7 @@ const topOtherGames = computed(() => {
   return otherGames.value.slice(0, 10);
 });
 
-// Recently played games (excluding priority games, for expandable)
+// Recently played games (for expandable)
 const recentOtherGames = computed(() => {
   return otherGames.value
     .filter((app) => (app.last_played ?? 0) > 0)
@@ -45,8 +45,11 @@ const recentOtherGames = computed(() => {
 
 // Gaming stats
 const stats = computed(() => {
-  const totalHours =
-    props.user.apps.reduce((sum, app) => sum + app.playtime_minutes, 0) / 60;
+  const totalMinutes = props.user.apps.reduce(
+    (sum, app) => sum + app.playtime_minutes,
+    0
+  );
+  const totalHours = totalMinutes / 60;
   const playedGames = props.user.apps.filter(
     (app) => app.playtime_minutes > 0
   ).length;
@@ -56,6 +59,7 @@ const stats = computed(() => {
     totalGames: props.user.apps.length,
     playedGames,
     totalHours: Math.round(totalHours * 10) / 10,
+    totalDays: Math.round((totalHours / 24) * 10) / 10,
     avgHoursPerGame: Math.round(avgHoursPerGame * 10) / 10,
   };
 });
@@ -70,19 +74,26 @@ function formatHours(minutes: number): string {
 }
 
 function formatLastPlayed(timestamp: number | undefined): string {
-  if (timestamp === 0 || timestamp === undefined) return "Never";
+  if (timestamp === 0 || timestamp === undefined) return "Never played";
 
   const date = new Date(timestamp * 1000);
   const now = new Date();
-  const diffDays = Math.floor(
-    (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
-  );
+  const diffMs = now.getTime() - date.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
 
+  if (diffMinutes < 60) return `${diffMinutes} minutes ago`;
+  if (diffHours < 24) return `${diffHours} hours ago`;
   if (diffDays === 0) return "Today";
   if (diffDays === 1) return "Yesterday";
   if (diffDays < 7) return `${diffDays} days ago`;
   if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-  return date.toLocaleDateString();
+  if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
+
+  return `${date.toLocaleDateString()} (${Math.floor(
+    diffDays / 365
+  )} years ago)`;
 }
 
 function getGameHeaderUrl(appId: number): string {
@@ -111,7 +122,7 @@ function hideImageOnError(event: Event) {
       <div class="bg-bg-tertiary p-3 rounded-lg border border-border">
         <div class="text-xl font-bold text-text">{{ stats.playedGames }}</div>
         <div class="text-xs text-text-muted uppercase tracking-wide">
-          Played
+          Played Games
         </div>
       </div>
 
@@ -159,8 +170,9 @@ function hideImageOnError(event: Event) {
                 {{ getGameName(game.app_id) }}
               </div>
               <div class="text-sm text-text-muted">
-                {{ formatLastPlayed(game.last_played) }}
+                Last played: {{ formatLastPlayed(game.last_played) }}
               </div>
+              <div class="text-xs text-text-muted"></div>
             </div>
           </div>
           <div class="font-mono font-semibold text-white">
@@ -206,8 +218,9 @@ function hideImageOnError(event: Event) {
                     <div class="text-xs font-medium text-text">
                       App {{ game.app_id }}
                     </div>
+                    <div class="text-xs text-text-muted"></div>
                     <div class="text-xs text-text-muted">
-                      {{ formatLastPlayed(game.last_played) }}
+                      Last played: {{ formatLastPlayed(game.last_played) }}
                     </div>
                   </div>
                 </div>
@@ -245,7 +258,7 @@ function hideImageOnError(event: Event) {
                       App {{ game.app_id }}
                     </div>
                     <div class="text-xs text-text-muted">
-                      {{ formatHours(game.playtime_minutes) }}
+                      Total: {{ formatHours(game.playtime_minutes) }}
                     </div>
                   </div>
                 </div>
