@@ -15,11 +15,7 @@ const props = defineProps<Props>();
 
 const realName = computed(() => props.profile?.realname);
 const location = computed(() => props.profile?.location);
-const memberSince = computed(() =>
-  props.profile?.memberSince
-    ? new Date(props.profile.memberSince).toDateString()
-    : undefined
-);
+const memberSince = props.profile?.memberSince;
 
 const onlineState = computed(() => {
   const state = props.profile?.onlineState;
@@ -53,7 +49,7 @@ const hasProfileData = computed(() => {
   return (
     realName.value ||
     location.value ||
-    memberSince.value ||
+    (memberSince ?? "Unknown") ||
     sanitizedSummary.value ||
     onlineState.value.text !== "Unknown" ||
     statusMessage.value ||

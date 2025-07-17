@@ -31,10 +31,7 @@ const lastActive = computed(() => {
 const gameCount = computed(() => props.user.apps.length);
 
 // Member since
-const memberSince = computed(() => {
-  if (!props.profile?.memberSince) return null;
-  return new Date(props.profile.memberSince).getFullYear();
-});
+const memberSince = props.profile?.memberSince || "Unknown";
 </script>
 
 <template>
